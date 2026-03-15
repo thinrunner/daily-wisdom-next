@@ -210,38 +210,38 @@ export default function HomePage() {
       )}
 
       {/* Дата */}
-      <div style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: subtleColor, marginBottom: 12 }}>
+      <div style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: subtleColor, marginBottom: 16 }}>
         {dateStr}
       </div>
 
       {/* Карточка */}
-      <div style={{
+      <div id="quote-card" style={{
         background: cardBg,
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         border: `1px solid ${borderColor}`,
         borderRadius: 28,
-        padding: '52px 48px 48px',
+        padding: '56px 44px 52px',
         maxWidth: 440,
         width: '100%',
         textAlign: 'center',
         boxShadow: '0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
         animation: 'fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards',
       }}>
-        <div style={{ fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', color: subtleColor, marginBottom: 28 }}>
+        <div style={{ fontSize: 14, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 32, fontWeight: 600 }}>
           {dayName}
         </div>
-        <div style={{ width: 36, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 24px' }} />
-        <div style={{ fontSize: 80, lineHeight: 0.5, color: 'rgba(255,255,255,0.1)', marginBottom: 20, userSelect: 'none' }}>"</div>
+        <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 28px' }} />
+        <div style={{ fontSize: 80, lineHeight: 0.5, color: 'rgba(255,255,255,0.1)', marginBottom: 24, userSelect: 'none' }}>"</div>
         <p style={{
-          fontSize: 19, lineHeight: 1.7, color: textColor,
+          fontSize: 20, lineHeight: 1.75, color: textColor,
           fontStyle: 'italic', fontFamily: 'Georgia, serif',
-          margin: '0 0 36px', letterSpacing: '0.015em',
+          margin: '0 0 40px', letterSpacing: '0.02em',
         }}>
           {quote.text}
         </p>
-        <div style={{ width: 36, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 24px' }} />
-        <div style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: subtleColor }}>
+        <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 28px' }} />
+        <div style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: subtleColor, fontVariant: 'small-caps' }}>
           {quote.author}
         </div>
       </div>
