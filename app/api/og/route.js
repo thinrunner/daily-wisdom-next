@@ -1,7 +1,13 @@
 import { ImageResponse } from '@vercel/og';
 import { QUOTES, MOOD_THEMES, MONTHS_RU } from '../../../lib/quotes';
+import { QUOTES_EN } from '../../../lib/quotes-en';
+import { QUOTES_HE } from '../../../lib/quotes-he';
+import { QUOTES_RO } from '../../../lib/quotes-ro';
+import { MONTHS } from '../../../lib/i18n';
 
 export const runtime = 'edge';
+
+const QUOTES_BY_LANG = { ru: QUOTES, en: QUOTES_EN, he: QUOTES_HE, ro: QUOTES_RO };
 
 function getDayInTimezone(offsetHours = 2) {
   const now = new Date();
@@ -14,10 +20,12 @@ function getDayInTimezone(offsetHours = 2) {
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const dayParam = searchParams.get('day');
+  const lang = searchParams.get('lang') || 'ru';
   const day = dayParam ? parseInt(dayParam) : getDayInTimezone(2);
 
   const date = new Date();
-  const quote = QUOTES[day % QUOTES.length];
+  const quotes = QUOTES_BY_LANG[lang] || QUOTES;
+  const quote = quotes[day % quotes.length];
   const theme = MOOD_THEMES[quote.mood] || MOOD_THEMES.calm;
 
   const [color1, color2] = theme.bg;
@@ -25,20 +33,21 @@ export async function GET(request) {
   const subtleColor = 'rgba(255,255,255,0.5)';
   const cardBg = 'rgba(255,255,255,0.07)';
   const borderColor = 'rgba(255,255,255,0.12)';
-  const dateStr = `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
+  const months = MONTHS[lang] || MONTHS_RU;
+  const dateStr = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  const isRTL = lang === 'he';
+
+  const appNames = { ru: 'Мудрость дня', en: 'Daily Wisdom', he: 'חוכמה יומית', ro: 'Înțelepciunea zilei' };
 
   return new ImageResponse(
     (
       <div style={{
-        width: '1200px',
-        height: '630px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '1200px', height: '630px',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
         background: `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`,
-        fontFamily: 'Georgia, serif',
-        position: 'relative',
+        fontFamily: 'Georgia, serif', position: 'relative',
+        direction: isRTL ? 'rtl' : 'ltr',
       }}>
         <div style={{
           position: 'absolute', width: '500px', height: '500px',
@@ -79,17 +88,13 @@ export async function GET(request) {
             fontSize: '90px', lineHeight: '0.5',
             color: 'rgba(255,255,255,0.1)',
             marginBottom: '24px', display: 'flex',
-          }}>"</div>
+          }}>&ldquo;</div>
 
           <div style={{
             fontSize: quote.text.length > 80 ? '26px' : '30px',
-            lineHeight: '1.65',
-            color: textColor,
-            fontStyle: 'italic',
-            fontFamily: 'Georgia, serif',
-            marginBottom: '36px',
-            display: 'flex',
-            textAlign: 'center',
+            lineHeight: '1.65', color: textColor,
+            fontStyle: 'italic', fontFamily: 'Georgia, serif',
+            marginBottom: '36px', display: 'flex', textAlign: 'center',
           }}>
             {quote.text}
           </div>
@@ -102,8 +107,7 @@ export async function GET(request) {
 
           <div style={{
             fontSize: '13px', letterSpacing: '0.3em', textTransform: 'uppercase',
-            color: subtleColor, display: 'flex',
-            fontFamily: 'Georgia, serif',
+            color: subtleColor, display: 'flex', fontFamily: 'Georgia, serif',
           }}>
             {quote.author}
           </div>
@@ -112,10 +116,9 @@ export async function GET(request) {
         <div style={{
           position: 'absolute', bottom: '28px',
           fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.3)',
-          display: 'flex',
+          color: 'rgba(255,255,255,0.3)', display: 'flex',
         }}>
-          ✦ Мудрость дня
+          ✦ {appNames[lang] || appNames.ru}
         </div>
       </div>
     ),
