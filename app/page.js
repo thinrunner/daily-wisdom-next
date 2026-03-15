@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MOOD_THEMES, getDayOfYear, getQuoteForDay } from '../lib/quotes';
 import { LANGUAGES, DAYS, MONTHS, UI, isRTL, getDateStr } from '../lib/i18n';
-import { getMusicForMood } from '../lib/music';
+import { getMusicForMood, getSpotifyDeepLink, getYouTubeDeepLink, openMusicLink } from '../lib/music';
 import { subscribeToPush, unsubscribeFromPush, isSubscribed } from '../lib/notifications';
 
 function QuoteCard({ quote, theme, dayName, dateStr, isToday, cardRef, dir }) {
@@ -68,6 +68,7 @@ export default function HomePage() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  const [notifBlocked, setNotifBlocked] = useState(false);
   const cardRef = useRef(null);
 
   const date = new Date();
@@ -119,8 +120,11 @@ export default function HomePage() {
       window.navigator.standalone === true;
     setIsInstalled(installed);
 
-    // Check notification subscription status
+    // Check notification subscription status + system permission
     isSubscribed().then(setNotifEnabled);
+    if ('Notification' in window && Notification.permission === 'denied') {
+      setNotifBlocked(true);
+    }
 
     if (installed) {
       const splashShown = sessionStorage.getItem('splash-shown');
@@ -164,12 +168,17 @@ export default function HomePage() {
   }
 
   async function toggleNotifications() {
+    if (notifBlocked) return; // System-level denied — can't request again
     if (notifEnabled) {
       await unsubscribeFromPush();
       setNotifEnabled(false);
     } else {
       const sub = await subscribeToPush(lang);
-      setNotifEnabled(!!sub);
+      if (sub) {
+        setNotifEnabled(true);
+      } else if ('Notification' in window && Notification.permission === 'denied') {
+        setNotifBlocked(true);
+      }
     }
   }
 
@@ -209,7 +218,9 @@ export default function HomePage() {
       twitter: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
       vk: `https://vk.com/share.php?url=${encodedUrl}&title=${encodedText}`,
     };
-    window.open(urls[platform], '_blank');
+    const target = urls[platform];
+    if (!target) return;
+    window.open(target, '_blank', 'noopener,noreferrer');
   }
 
   const handleSaveImage = useCallback(async () => {
@@ -217,14 +228,43 @@ export default function HomePage() {
     setSavingImage(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
+      // High-DPI: use 3x for crisp output on retina displays
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
       const canvas = await html2canvas(cardRef.current, {
         backgroundColor: color1,
-        scale: 2,
+        scale: dpr,
         useCORS: true,
         logging: false,
       });
 
-      canvas.toBlob(async (blob) => {
+      // Re-render at 1.91:1 social preview aspect ratio (1200×628)
+      const TARGET_W = 1200;
+      const TARGET_H = 628;
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = TARGET_W;
+      outCanvas.height = TARGET_H;
+      const ctx = outCanvas.getContext('2d');
+
+      // Fill background with gradient start color
+      ctx.fillStyle = color1;
+      ctx.fillRect(0, 0, TARGET_W, TARGET_H);
+
+      // Center-fit the captured card
+      const srcRatio = canvas.width / canvas.height;
+      const dstRatio = TARGET_W / TARGET_H;
+      let drawW, drawH;
+      if (srcRatio > dstRatio) {
+        drawW = TARGET_W * 0.85;
+        drawH = drawW / srcRatio;
+      } else {
+        drawH = TARGET_H * 0.85;
+        drawW = drawH * srcRatio;
+      }
+      const drawX = (TARGET_W - drawW) / 2;
+      const drawY = (TARGET_H - drawH) / 2;
+      ctx.drawImage(canvas, drawX, drawY, drawW, drawH);
+
+      outCanvas.toBlob(async (blob) => {
         if (!blob) { setSavingImage(false); return; }
         const file = new File([blob], 'daily-wisdom.png', { type: 'image/png' });
 
@@ -337,20 +377,23 @@ export default function HomePage() {
 
       {/* Notification bell */}
       <button onClick={toggleNotifications} style={{
-        background: 'none', border: 'none', cursor: 'pointer',
+        background: 'none', border: 'none',
+        cursor: notifBlocked ? 'not-allowed' : 'pointer',
         marginBottom: 12, padding: 8, display: 'flex', alignItems: 'center', gap: 6,
+        opacity: notifBlocked ? 0.4 : 1,
       }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-          stroke={notifEnabled ? '#FFCA28' : 'rgba(255,255,255,0.35)'} strokeWidth="2">
+          stroke={notifEnabled ? '#FFCA28' : notifBlocked ? '#ff4444' : 'rgba(255,255,255,0.35)'} strokeWidth="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          {notifBlocked && <line x1="2" y1="2" x2="22" y2="22" stroke="#ff4444" strokeWidth="2.5"/>}
         </svg>
         <span style={{
           fontSize: 9, letterSpacing: '0.15em', textTransform: 'uppercase',
-          color: notifEnabled ? '#FFCA28' : 'rgba(255,255,255,0.35)',
+          color: notifEnabled ? '#FFCA28' : notifBlocked ? '#ff4444' : 'rgba(255,255,255,0.35)',
           fontFamily: 'Georgia, serif',
         }}>
-          {notifEnabled ? 'ON' : 'OFF'}
+          {notifBlocked ? 'BLOCKED' : notifEnabled ? 'ON' : 'OFF'}
         </span>
       </button>
 
@@ -511,28 +554,28 @@ export default function HomePage() {
             {music.artist}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <a href={music.spotify} target="_blank" rel="noopener noreferrer" style={{
+            <button onClick={() => openMusicLink(getSpotifyDeepLink(music.spotify))} style={{
               background: '#1DB954', border: 'none', borderRadius: 10,
               padding: '9px 18px', color: '#fff', fontSize: 11,
-              fontFamily: 'Georgia, serif', textDecoration: 'none',
+              fontFamily: 'Georgia, serif', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
               </svg>
               Spotify
-            </a>
-            <a href={music.youtube} target="_blank" rel="noopener noreferrer" style={{
+            </button>
+            <button onClick={() => openMusicLink(getYouTubeDeepLink(music.youtube))} style={{
               background: '#FF0000', border: 'none', borderRadius: 10,
               padding: '9px 18px', color: '#fff', fontSize: 11,
-              fontFamily: 'Georgia, serif', textDecoration: 'none',
+              fontFamily: 'Georgia, serif', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
               YouTube
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -542,7 +585,7 @@ export default function HomePage() {
         {ui.dayCounter} &middot; {dayOfYear} / 365
       </div>
 
-      {/* Past days section */}
+      {/* Past days section — 3D card stack */}
       <div style={{ marginTop: 40, maxWidth: 440, width: '100%' }}>
         <div style={{
           fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
@@ -550,18 +593,33 @@ export default function HomePage() {
         }}>
           {ui.recent}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {pastDays.map((pd, i) => (
-            <QuoteCard
-              key={i}
-              quote={pd.quote}
-              theme={pd.theme}
-              dayName={pd.dayName}
-              dateStr={pd.dateStr}
-              isToday={false}
-              dir={dir}
-            />
-          ))}
+        <div style={{
+          display: 'flex', flexDirection: 'column', gap: 14,
+          perspective: 800, perspectiveOrigin: 'center top',
+        }}>
+          {pastDays.map((pd, i) => {
+            const depth = (i + 1) * -20;
+            const scale = 1 - (i + 1) * 0.03;
+            const blur = (i + 1) * 0.5;
+            return (
+              <div key={i} style={{
+                transform: `translateZ(${depth}px) scale(${scale})`,
+                filter: `blur(${blur}px)`,
+                opacity: 0.85 - i * 0.12,
+                transition: 'transform 0.4s ease, filter 0.4s ease, opacity 0.4s ease',
+                transformStyle: 'preserve-3d',
+              }}>
+                <QuoteCard
+                  quote={pd.quote}
+                  theme={pd.theme}
+                  dayName={pd.dayName}
+                  dateStr={pd.dateStr}
+                  isToday={false}
+                  dir={dir}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
