@@ -13,8 +13,6 @@ function getDayInTimezone(offsetHours = 2) {
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-
-  // Берём день из параметра (передан из layout.js) или считаем сами в UTC+2
   const dayParam = searchParams.get('day');
   const day = dayParam ? parseInt(dayParam) : getDayInTimezone(2);
 
@@ -27,7 +25,6 @@ export async function GET(request) {
   const subtleColor = 'rgba(255,255,255,0.5)';
   const cardBg = 'rgba(255,255,255,0.07)';
   const borderColor = 'rgba(255,255,255,0.12)';
-
   const dateStr = `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
 
   return new ImageResponse(
@@ -43,7 +40,6 @@ export async function GET(request) {
         fontFamily: 'Georgia, serif',
         position: 'relative',
       }}>
-        {/* Декоративный круг */}
         <div style={{
           position: 'absolute', width: '500px', height: '500px',
           borderRadius: '50%', background: 'rgba(255,255,255,0.03)',
@@ -55,7 +51,6 @@ export async function GET(request) {
           bottom: '-80px', left: '-80px', display: 'flex',
         }} />
 
-        {/* Дата */}
         <div style={{
           fontSize: '13px', letterSpacing: '0.25em', textTransform: 'uppercase',
           color: subtleColor, marginBottom: '20px', display: 'flex',
@@ -64,7 +59,6 @@ export async function GET(request) {
           {dateStr}
         </div>
 
-        {/* Карточка */}
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           background: cardBg,
@@ -75,21 +69,18 @@ export async function GET(request) {
           textAlign: 'center',
           boxShadow: '0 40px 80px rgba(0,0,0,0.4)',
         }}>
-          {/* Разделитель */}
           <div style={{
             width: '40px', height: '1px',
             background: 'rgba(255,255,255,0.2)',
             marginBottom: '24px', display: 'flex',
           }} />
 
-          {/* Кавычка */}
           <div style={{
             fontSize: '90px', lineHeight: '0.5',
             color: 'rgba(255,255,255,0.1)',
             marginBottom: '24px', display: 'flex',
           }}>"</div>
 
-          {/* Цитата */}
           <div style={{
             fontSize: quote.text.length > 80 ? '26px' : '30px',
             lineHeight: '1.65',
@@ -103,14 +94,12 @@ export async function GET(request) {
             {quote.text}
           </div>
 
-          {/* Разделитель */}
           <div style={{
             width: '40px', height: '1px',
             background: 'rgba(255,255,255,0.2)',
             marginBottom: '24px', display: 'flex',
           }} />
 
-          {/* Автор */}
           <div style={{
             fontSize: '13px', letterSpacing: '0.3em', textTransform: 'uppercase',
             color: subtleColor, display: 'flex',
@@ -120,7 +109,6 @@ export async function GET(request) {
           </div>
         </div>
 
-        {/* Брендинг */}
         <div style={{
           position: 'absolute', bottom: '28px',
           fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase',
@@ -131,6 +119,14 @@ export async function GET(request) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    {
+      width: 1200,
+      height: 630,
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    }
   );
 }

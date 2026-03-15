@@ -16,7 +16,6 @@ export async function generateMetadata() {
   const quote = getQuoteForDate(date);
   const dateStr = `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
 
-  // day в URL гарантирует уникальный URL каждый день — кеш Telegram/WhatsApp не сработает
   const ogImageUrl = `${BASE_URL}/api/og?day=${day}&v=${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}`;
 
   return {
@@ -55,10 +54,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ru">
       <head>
+        {/* PWA — критично для Android Chrome */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        {/* PWA — iOS Safari */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Мудрость дня" />
-        <link rel="apple-touch-icon" href="/icons/icon-152.png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
         <meta name="theme-color" content="#1a1a2e" />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
@@ -66,7 +71,11 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-              navigator.serviceWorker.register('/sw.js');
+              navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                console.log('SW registered:', reg.scope);
+              }).catch(function(err) {
+                console.log('SW failed:', err);
+              });
             });
           }
         `}} />

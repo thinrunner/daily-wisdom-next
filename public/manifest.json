@@ -3,37 +3,37 @@
   "short_name": "Мудрость",
   "description": "Ежедневные мотивирующие цитаты великих мыслителей",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
   "orientation": "portrait",
   "lang": "ru",
   "icons": [
     {
-      "src": "/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["lifestyle", "education"],
-  "shortcuts": [
-    {
-      "name": "Цитата дня",
-      "url": "/",
-      "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
-    }
-  ]
+  "categories": ["lifestyle", "education"]
 }
