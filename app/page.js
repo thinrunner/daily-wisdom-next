@@ -10,10 +10,10 @@ export default function HomePage() {
   const dark = theme.dark;
   const [color1, color2] = theme.bg;
 
-  const textColor = dark ? '#ffffff' : '#1a1a2e';
-  const subtleColor = dark ? 'rgba(255,255,255,0.5)' : 'rgba(26,26,46,0.45)';
-  const borderColor = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.09)';
-  const cardBg = dark ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.45)';
+  const textColor = '#ffffff';
+  const subtleColor = 'rgba(255,255,255,0.5)';
+  const borderColor = 'rgba(255,255,255,0.12)';
+  const cardBg = 'rgba(255,255,255,0.07)';
 
   const dayName = DAYS_RU[date.getDay()];
   const dateStr = `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
@@ -22,22 +22,39 @@ export default function HomePage() {
   const [copied, setCopied] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://daily-wisdom-next.vercel.app';
+  // Шарим URL — мессенджер прочитает OG-теги и покажет красивую карточку
+  const shareUrl = BASE_URL;
   const shareText = `«${quote.text}» — ${quote.author}`;
 
+  async function handleShare() {
+    // На мобильных — нативный шит с превью
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: 'Мудрость дня', text: shareText, url: shareUrl });
+        return;
+      } catch (e) { /* отменил — показываем панель */ }
+    }
+    setShowShare(s => !s);
+  }
+
   function handleCopy() {
-    navigator.clipboard.writeText(shareText);
+    // Копируем ССЫЛКУ а не текст — при вставке в мессенджер покажется OG-карточка
+    navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
   function shareOn(platform) {
-    const encoded = encodeURIComponent(shareText);
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedText = encodeURIComponent(shareText);
     const urls = {
-      twitter:  `https://twitter.com/intent/tweet?text=${encoded}`,
-      telegram: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encoded}`,
-      whatsapp: `https://api.whatsapp.com/send?text=${encoded}`,
-      vk:       `https://vk.com/share.php?title=${encoded}&url=${encodeURIComponent(shareUrl)}`,
+      // Telegram: url + text — покажет OG-превью ссылки
+      telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`,
+      // WhatsApp: текст + ссылка — WA сам развернёт превью
+      whatsapp: `https://api.whatsapp.com/send?text=${encodedText}%0A${encodedUrl}`,
+      twitter:  `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+      vk:       `https://vk.com/share.php?url=${encodedUrl}&title=${encodedText}`,
     };
     window.open(urls[platform], '_blank');
   }
@@ -55,21 +72,25 @@ export default function HomePage() {
       overflow: 'hidden',
       fontFamily: 'Georgia, serif',
     }}>
+
+      {/* Декоративные орбы */}
       <div style={{
         position: 'absolute', width: 500, height: 500, borderRadius: '50%',
-        background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.35)',
+        background: 'rgba(255,255,255,0.03)',
         top: -150, right: -150, pointerEvents: 'none',
       }} />
       <div style={{
         position: 'absolute', width: 300, height: 300, borderRadius: '50%',
-        background: dark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.2)',
+        background: 'rgba(255,255,255,0.02)',
         bottom: -80, left: -80, pointerEvents: 'none',
       }} />
 
+      {/* Дата */}
       <div style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: subtleColor, marginBottom: 12 }}>
         {dateStr}
       </div>
 
+      {/* Карточка */}
       <div style={{
         background: cardBg,
         backdropFilter: 'blur(24px)',
@@ -80,16 +101,14 @@ export default function HomePage() {
         maxWidth: 440,
         width: '100%',
         textAlign: 'center',
-        boxShadow: dark
-          ? '0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)'
-          : '0 40px 80px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7)',
+        boxShadow: '0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
         animation: 'fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards',
       }}>
         <div style={{ fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', color: subtleColor, marginBottom: 28 }}>
           {dayName}
         </div>
-        <div style={{ width: 36, height: 1, background: dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.12)', margin: '0 auto 24px' }} />
-        <div style={{ fontSize: 80, lineHeight: 0.5, color: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)', marginBottom: 20, userSelect: 'none' }}>"</div>
+        <div style={{ width: 36, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 24px' }} />
+        <div style={{ fontSize: 80, lineHeight: 0.5, color: 'rgba(255,255,255,0.1)', marginBottom: 20, userSelect: 'none' }}>"</div>
         <p style={{
           fontSize: 19, lineHeight: 1.7, color: textColor,
           fontStyle: 'italic', fontFamily: 'Georgia, serif',
@@ -97,22 +116,32 @@ export default function HomePage() {
         }}>
           {quote.text}
         </p>
-        <div style={{ width: 36, height: 1, background: dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.12)', margin: '0 auto 24px' }} />
+        <div style={{ width: 36, height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 auto 24px' }} />
         <div style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: subtleColor }}>
           {quote.author}
         </div>
       </div>
 
+      {/* Кнопка поделиться */}
       <button
-        onClick={() => setShowShare(s => !s)}
+        onClick={handleShare}
         style={{
-          marginTop: 28, background: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.07)',
-          border: `1px solid ${borderColor}`, borderRadius: 50,
-          padding: '13px 32px', color: textColor, fontSize: 11,
-          letterSpacing: '0.22em', textTransform: 'uppercase',
-          fontFamily: 'Georgia, serif', cursor: 'pointer',
-          backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', gap: 9,
-          transition: 'transform 0.15s',
+          marginTop: 28,
+          background: 'rgba(255,255,255,0.1)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 50,
+          padding: '13px 32px',
+          color: textColor,
+          fontSize: 11,
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          fontFamily: 'Georgia, serif',
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 9,
+          transition: 'transform 0.15s, background 0.15s',
         }}
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -123,13 +152,21 @@ export default function HomePage() {
         Поделиться
       </button>
 
+      {/* Панель для десктопа */}
       {showShare && (
         <div style={{
-          marginTop: 14, background: dark ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.55)',
-          backdropFilter: 'blur(20px)', border: `1px solid ${borderColor}`,
-          borderRadius: 22, padding: '18px 20px',
-          display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center',
-          maxWidth: 360, animation: 'fadeUp 0.3s ease forwards',
+          marginTop: 14,
+          background: 'rgba(0,0,0,0.35)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 22,
+          padding: '18px 20px',
+          display: 'flex',
+          gap: 10,
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          maxWidth: 360,
+          animation: 'fadeUp 0.3s ease forwards',
         }}>
           {[
             { id: 'telegram', label: 'Telegram', color: '#2AABEE', icon: '✈' },
@@ -148,13 +185,15 @@ export default function HomePage() {
             </button>
           ))}
           <button onClick={handleCopy} style={{
-            background: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)',
-            border: `1px solid ${borderColor}`, borderRadius: 14,
-            padding: '11px 18px', color: textColor, fontSize: 11,
+            background: 'rgba(255,255,255,0.12)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 14, padding: '11px 18px',
+            color: '#fff', fontSize: 11,
             fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center',
             gap: 7, minWidth: 130, justifyContent: 'center', cursor: 'pointer',
+            transition: 'transform 0.15s',
           }}>
-            {copied ? '✓ Скопировано!' : '📋 Копировать'}
+            {copied ? '✓ Ссылка скопирована!' : '🔗 Копировать ссылку'}
           </button>
         </div>
       )}
@@ -168,7 +207,7 @@ export default function HomePage() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        button:hover { transform: scale(1.03) !important; }
+        button:hover { transform: scale(1.03) !important; background: rgba(255,255,255,0.15) !important; }
         button:active { transform: scale(0.97) !important; }
         * { box-sizing: border-box; }
       `}</style>
