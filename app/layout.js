@@ -2,7 +2,6 @@ import { getQuoteForDate, getDayOfYear, MONTHS_RU } from '../lib/quotes';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://daily-wisdom-next.vercel.app';
 
-// Определяем день в часовом поясе Израиля (UTC+2 / UTC+3 летом)
 function getDayInTimezone(offsetHours = 2) {
   const now = new Date();
   const local = new Date(now.getTime() + offsetHours * 60 * 60 * 1000);
@@ -12,14 +11,13 @@ function getDayInTimezone(offsetHours = 2) {
 }
 
 export async function generateMetadata() {
-  // Используем день в локальном часовом поясе (UTC+2)
   const day = getDayInTimezone(2);
   const date = new Date();
   const quote = getQuoteForDate(date);
   const dateStr = `${date.getDate()} ${MONTHS_RU[date.getMonth()]} ${date.getFullYear()}`;
 
-  // Передаём день в URL — OG-image покажет ту же цитату что и сайт
-  const ogImageUrl = `${BASE_URL}/api/og?day=${day}`;
+  // day в URL гарантирует уникальный URL каждый день — кеш Telegram/WhatsApp не сработает
+  const ogImageUrl = `${BASE_URL}/api/og?day=${day}&v=${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}`;
 
   return {
     title: 'Мудрость дня',
@@ -35,7 +33,12 @@ export async function generateMetadata() {
       description: `«${quote.text}» — ${quote.author}`,
       url: BASE_URL,
       siteName: 'Мудрость дня',
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `Мудрость дня · ${dateStr}` }],
+      images: [{
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: `Мудрость дня · ${dateStr}`,
+      }],
       locale: 'ru_RU',
       type: 'website',
     },
