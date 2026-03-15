@@ -9,7 +9,7 @@
     "generate-icons": "python3 scripts/generate-icons.py"
   },
   "dependencies": {
-    "next": "15.2.3",
+    "next": "15.2.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@vercel/og": "^0.6.2"
