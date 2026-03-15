@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MOOD_THEMES, getQuoteForDate, getDayOfYear, MONTHS_RU, DAYS_RU } from '../lib/quotes';
 
 export default function HomePage() {
@@ -21,25 +21,73 @@ export default function HomePage() {
 
   const [copied, setCopied] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showInstall, setShowInstall] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://daily-wisdom-next.vercel.app';
-  // Шарим URL — мессенджер прочитает OG-теги и покажет красивую карточку
   const shareUrl = BASE_URL;
   const shareText = `«${quote.text}» — ${quote.author}`;
 
+  useEffect(() => {
+    // Проверяем iOS
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    setIsIOS(ios);
+
+    // Проверяем установлено ли уже
+    const installed =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    setIsInstalled(installed);
+
+    if (installed) return; // уже установлено — ничего не показываем
+
+    // Android: ловим событие beforeinstallprompt
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      // Показываем баннер через 3 сек
+      setTimeout(() => setShowInstall(true), 3000);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+
+    // iOS: показываем подсказку через 3 сек если не установлено
+    if (ios) {
+      const shown = sessionStorage.getItem('install-hint-shown');
+      if (!shown) {
+        setTimeout(() => {
+          setShowInstall(true);
+          sessionStorage.setItem('install-hint-shown', '1');
+        }, 3000);
+      }
+    }
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  async function handleInstall() {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setShowInstall(false);
+        setInstallPrompt(null);
+      }
+    }
+  }
+
   async function handleShare() {
-    // На мобильных — нативный шит с превью
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: 'Мудрость дня', text: shareText, url: shareUrl });
         return;
-      } catch (e) { /* отменил — показываем панель */ }
+      } catch (e) {}
     }
     setShowShare(s => !s);
   }
 
   function handleCopy() {
-    // Копируем ССЫЛКУ а не текст — при вставке в мессенджер покажется OG-карточка
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -49,9 +97,7 @@ export default function HomePage() {
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedText = encodeURIComponent(shareText);
     const urls = {
-      // Telegram: url + text — покажет OG-превью ссылки
       telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`,
-      // WhatsApp: текст + ссылка — WA сам развернёт превью
       whatsapp: `https://api.whatsapp.com/send?text=${encodedText}%0A${encodedUrl}`,
       twitter:  `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
       vk:       `https://vk.com/share.php?url=${encodedUrl}&title=${encodedText}`,
@@ -84,6 +130,84 @@ export default function HomePage() {
         background: 'rgba(255,255,255,0.02)',
         bottom: -80, left: -80, pointerEvents: 'none',
       }} />
+
+      {/* Баннер установки */}
+      {showInstall && !isInstalled && (
+        <div style={{
+          position: 'fixed',
+          bottom: 24,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'calc(100% - 32px)',
+          maxWidth: 400,
+          background: 'rgba(20,20,35,0.97)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: 20,
+          padding: '18px 20px',
+          zIndex: 1000,
+          animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+            {/* Иконка */}
+            <div style={{
+              width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+              background: `linear-gradient(135deg, ${color1}, ${color2})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 22,
+            }}>✦</div>
+
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 4, fontFamily: 'Georgia, serif' }}>
+                Мудрость дня
+              </div>
+              {isIOS ? (
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+                  Нажми <span style={{ color: '#fff' }}>⬆ Поделиться</span> внизу Safari, затем <span style={{ color: '#fff' }}>«На экран Домой»</span>
+                </div>
+              ) : (
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+                  Добавь на главный экран — новая цитата каждый день
+                </div>
+              )}
+            </div>
+
+            {/* Кнопка закрыть */}
+            <button
+              onClick={() => setShowInstall(false)}
+              style={{
+                background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)',
+                fontSize: 20, cursor: 'pointer', padding: '0 0 0 4px', lineHeight: 1,
+                flexShrink: 0,
+              }}
+            >×</button>
+          </div>
+
+          {/* Кнопка установки (только Android) */}
+          {!isIOS && installPrompt && (
+            <button
+              onClick={handleInstall}
+              style={{
+                marginTop: 14,
+                width: '100%',
+                background: `linear-gradient(135deg, ${color1}, ${color2})`,
+                border: 'none',
+                borderRadius: 12,
+                padding: '12px',
+                color: '#fff',
+                fontSize: 13,
+                letterSpacing: '0.1em',
+                fontFamily: 'Georgia, serif',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+              }}
+            >
+              Установить приложение
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Дата */}
       <div style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: subtleColor, marginBottom: 12 }}>
@@ -141,7 +265,7 @@ export default function HomePage() {
           display: 'flex',
           alignItems: 'center',
           gap: 9,
-          transition: 'transform 0.15s, background 0.15s',
+          transition: 'transform 0.15s',
         }}
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -152,7 +276,7 @@ export default function HomePage() {
         Поделиться
       </button>
 
-      {/* Панель для десктопа */}
+      {/* Панель шаринга для десктопа */}
       {showShare && (
         <div style={{
           marginTop: 14,
@@ -179,7 +303,6 @@ export default function HomePage() {
               padding: '11px 18px', color: '#fff', fontSize: 11,
               fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center',
               gap: 7, minWidth: 130, justifyContent: 'center', cursor: 'pointer',
-              transition: 'transform 0.15s',
             }}>
               <span>{s.icon}</span>{s.label}
             </button>
@@ -191,7 +314,6 @@ export default function HomePage() {
             color: '#fff', fontSize: 11,
             fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center',
             gap: 7, minWidth: 130, justifyContent: 'center', cursor: 'pointer',
-            transition: 'transform 0.15s',
           }}>
             {copied ? '✓ Ссылка скопирована!' : '🔗 Копировать ссылку'}
           </button>
@@ -207,8 +329,10 @@ export default function HomePage() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        button:hover { transform: scale(1.03) !important; background: rgba(255,255,255,0.15) !important; }
-        button:active { transform: scale(0.97) !important; }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
         * { box-sizing: border-box; }
       `}</style>
     </div>
