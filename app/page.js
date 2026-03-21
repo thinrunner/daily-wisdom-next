@@ -277,7 +277,7 @@ export default function HomePage() {
       <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.02)', bottom: -80, left: -80, pointerEvents: 'none' }} />
 
       {/* Language switcher */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 28, background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '4px 6px' }}>
+      <div dir="ltr" style={{ display: 'flex', gap: 6, marginBottom: 28, background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '4px 6px' }}>
         {LANGUAGES.map(l => (
           <button key={l.code} onClick={() => switchLang(l.code)} style={{
             background: lang === l.code ? 'rgba(255,255,255,0.15)' : 'transparent',
@@ -336,6 +336,7 @@ export default function HomePage() {
 
       {/* Horizontal card carousel */}
       <div
+        dir="ltr"
         style={{ width: '100%', maxWidth: 440, overflow: 'hidden', touchAction: 'pan-y', cursor: 'grab' }}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
