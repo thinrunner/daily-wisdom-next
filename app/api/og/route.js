@@ -1,9 +1,9 @@
 import { ImageResponse } from '@vercel/og';
-import { QUOTES, MOOD_THEMES, MONTHS_RU } from '../../../lib/quotes';
+import { QUOTES, MOOD_THEMES } from '../../../lib/quotes';
 import { QUOTES_EN } from '../../../lib/quotes-en';
 import { QUOTES_HE } from '../../../lib/quotes-he';
 import { QUOTES_RO } from '../../../lib/quotes-ro';
-import { MONTHS } from '../../../lib/i18n';
+import { MONTHS, DAYS } from '../../../lib/i18n';
 
 export const runtime = 'edge';
 
@@ -29,16 +29,13 @@ export async function GET(request) {
   const theme = MOOD_THEMES[quote.mood] || MOOD_THEMES.calm;
 
   const [color1, color2] = theme.bg;
-  const textColor = '#ffffff';
   const subtleColor = 'rgba(255,255,255,0.5)';
-  const cardBg = 'rgba(255,255,255,0.07)';
-  const borderColor = 'rgba(255,255,255,0.12)';
-  const months = MONTHS[lang] || MONTHS_RU;
+  const months = MONTHS[lang] || MONTHS.ru;
   const dateStr = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  const dayName = (DAYS[lang] || DAYS.ru)[date.getDay()];
   const isRTL = lang === 'he';
 
-  const appNames = { ru: 'Мудрость дня', en: 'Daily Wisdom', he: 'חוכמה יומית', ro: 'Înțelepciunea zilei' };
-
+  // Scale factor ~2x relative to the 440px app card → 880px card in 1200px image
   return new ImageResponse(
     (
       <div style={{
@@ -47,8 +44,8 @@ export async function GET(request) {
         alignItems: 'center', justifyContent: 'center',
         background: `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`,
         fontFamily: 'Georgia, serif', position: 'relative',
-        direction: isRTL ? 'rtl' : 'ltr',
       }}>
+        {/* Decorative orbs — same as app */}
         <div style={{
           position: 'absolute', width: '500px', height: '500px',
           borderRadius: '50%', background: 'rgba(255,255,255,0.03)',
@@ -60,65 +57,74 @@ export async function GET(request) {
           bottom: '-80px', left: '-80px', display: 'flex',
         }} />
 
-        <div style={{
-          fontSize: '13px', letterSpacing: '0.25em', textTransform: 'uppercase',
-          color: subtleColor, marginBottom: '20px', display: 'flex',
-          fontFamily: 'Georgia, serif',
-        }}>
-          {dateStr}
-        </div>
-
+        {/* Card — mirrors app QuoteCard exactly, scaled 2x */}
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          background: cardBg,
-          border: `1px solid ${borderColor}`,
-          borderRadius: '32px',
-          padding: '56px 72px',
-          maxWidth: '860px', width: '860px',
+          background: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: '56px',
+          padding: '72px 88px',
+          width: '900px',
           textAlign: 'center',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.4)',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
+          direction: isRTL ? 'rtl' : 'ltr',
         }}>
+          {/* Date — app: 10px × 2 = 20px */}
           <div style={{
-            width: '40px', height: '1px',
+            fontSize: '20px', letterSpacing: '0.25em', textTransform: 'uppercase',
+            color: subtleColor, marginBottom: '24px', display: 'flex',
+          }}>
+            {dateStr}
+          </div>
+
+          {/* Day name — app: 14px × 2 = 28px */}
+          <div style={{
+            fontSize: '28px', letterSpacing: '0.35em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.7)', marginBottom: '64px', fontWeight: 600,
+            display: 'flex',
+          }}>
+            {dayName}
+          </div>
+
+          {/* Divider — app: 40px wide × 2 = 80px */}
+          <div style={{
+            width: '80px', height: '1px',
             background: 'rgba(255,255,255,0.2)',
-            marginBottom: '24px', display: 'flex',
+            marginBottom: '56px', display: 'flex',
           }} />
 
+          {/* Opening quote mark — app: 80px × 2 = 160px */}
           <div style={{
-            fontSize: '90px', lineHeight: '0.5',
+            fontSize: '160px', lineHeight: '0.5',
             color: 'rgba(255,255,255,0.1)',
-            marginBottom: '24px', display: 'flex',
+            marginBottom: '48px', display: 'flex',
           }}>&ldquo;</div>
 
+          {/* Quote text — app: 20px × 2 = 40px, scale down for long quotes */}
           <div style={{
-            fontSize: quote.text.length > 80 ? '26px' : '30px',
-            lineHeight: '1.65', color: textColor,
+            fontSize: quote.text.length > 100 ? '30px' : quote.text.length > 60 ? '36px' : '40px',
+            lineHeight: '1.75', color: '#ffffff',
             fontStyle: 'italic', fontFamily: 'Georgia, serif',
-            marginBottom: '36px', display: 'flex', textAlign: 'center',
+            marginBottom: '56px', display: 'flex', textAlign: 'center',
+            flexWrap: 'wrap', justifyContent: 'center',
           }}>
             {quote.text}
           </div>
 
+          {/* Divider */}
           <div style={{
-            width: '40px', height: '1px',
+            width: '80px', height: '1px',
             background: 'rgba(255,255,255,0.2)',
-            marginBottom: '24px', display: 'flex',
+            marginBottom: '48px', display: 'flex',
           }} />
 
+          {/* Author — app: 11px × 2 = 22px */}
           <div style={{
-            fontSize: '13px', letterSpacing: '0.3em', textTransform: 'uppercase',
+            fontSize: '22px', letterSpacing: '0.35em', textTransform: 'uppercase',
             color: subtleColor, display: 'flex', fontFamily: 'Georgia, serif',
           }}>
             {quote.author}
           </div>
-        </div>
-
-        <div style={{
-          position: 'absolute', bottom: '28px',
-          fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.3)', display: 'flex',
-        }}>
-          ✦ {appNames[lang] || appNames.ru}
         </div>
       </div>
     ),
