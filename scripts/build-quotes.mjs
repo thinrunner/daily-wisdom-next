@@ -3,6 +3,7 @@
 // Проверяет базу (объём, дубликаты, переводы) и раскладывает цитаты по дням так,
 // чтобы один автор и одно настроение не шли подряд. Порядок детерминирован.
 
+import { createHash } from 'node:crypto';
 import { readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -18,6 +19,7 @@ const MOODS = [
 ];
 const MIN_QUOTES = 366;      // хватает на любой год, включая високосный
 const MAX_LENGTH = 180;      // длиннее — не помещается на карточке
+const MAX_SOURCE = 60;       // подпись с источником — одна короткая строка
 const AUTHOR_GAP = 10;       // минимум дней между цитатами одного автора
 
 const errors = [];
@@ -41,6 +43,13 @@ const seen = new Map();
 for (const q of quotes) {
   if (!MOODS.includes(q.mood)) errors.push(`${q.where}: неизвестное настроение «${q.mood}»`);
   if (!authors[q.author]) errors.push(`${q.where}: неизвестный автор «${q.author}»`);
+  if (q.source !== undefined) {
+    for (const lang of LANGS) {
+      const src = q.source?.[lang];
+      if (typeof src !== 'string' || !src.trim()) errors.push(`${q.where}: источник указан, но не на ${lang}`);
+      else if (src.length > MAX_SOURCE) errors.push(`${q.where}: источник на ${lang} длиннее ${MAX_SOURCE} символов`);
+    }
+  }
   for (const lang of LANGS) {
     const text = q[lang];
     if (typeof text !== 'string' || !text.trim()) {
@@ -61,6 +70,18 @@ if (quotes.length < MIN_QUOTES) {
 if (errors.length) {
   console.error(`База цитат не прошла проверку (${errors.length}):\n- ${errors.join('\n- ')}`);
   process.exit(1);
+}
+
+// Постоянный идентификатор цитаты (для «Избранного»): не зависит от порядка и от правок переводов,
+// меняется только вместе с английским текстом.
+const ids = new Set();
+for (const q of quotes) {
+  q.id = createHash('sha1').update(normalize(q.en)).digest('hex').slice(0, 8);
+  if (ids.has(q.id)) {
+    console.error(`${q.where}: совпал идентификатор ${q.id}`);
+    process.exit(1);
+  }
+  ids.add(q.id);
 }
 
 // Детерминированное перемешивание (mulberry32), затем жадная расстановка.
@@ -96,7 +117,14 @@ while (pool.length) {
 
 mkdirSync(outDir, { recursive: true });
 for (const lang of LANGS) {
-  const data = ordered.map((q) => ({ text: q[lang], author: authors[q.author][lang], mood: q.mood }));
+  const data = ordered.map((q) => ({
+    id: q.id,
+    text: q[lang],
+    author: authors[q.author][lang],
+    // у «Чжуан-цзы» или «Мэн-цзы» книга названа именем автора — второй раз его не пишем
+    ...(q.source && q.source[lang] !== authors[q.author][lang] && { source: q.source[lang] }),
+    mood: q.mood,
+  }));
   writeFileSync(join(outDir, `quotes-${lang}.json`), JSON.stringify(data));
 }
 

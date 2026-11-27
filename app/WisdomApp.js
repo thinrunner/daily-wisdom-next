@@ -27,6 +27,19 @@ const store = {
   },
 };
 
+// Короткий тактильный отклик. Работает там, где браузер это умеет (Android); в остальных молча ничего не делает.
+function buzz(ms = 8) {
+  try { navigator.vibrate?.(ms); } catch {}
+}
+
+function Heart({ filled, size = 18 }) {
+  return (
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+      <path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" />
+    </svg>
+  );
+}
+
 function QuoteCard({ quote, dayName, dateStr, dir, hidden }) {
   const long = quote.text.length > 130;
   // разрядка красит латиницу и кириллицу, но рвёт слова на иврите
@@ -64,6 +77,11 @@ function QuoteCard({ quote, dayName, dateStr, dir, hidden }) {
       <div style={{ fontSize: wide ? 13 : 11, letterSpacing: wide || '0.3em', textTransform: 'uppercase', color: SUBTLE }}>
         {quote.author}
       </div>
+      {quote.source && (
+        <div style={{ marginTop: 10, fontSize: 12, fontStyle: 'italic', color: 'rgba(255,255,255,0.4)' }}>
+          {quote.source}
+        </div>
+      )}
     </article>
   );
 }
@@ -84,6 +102,10 @@ export default function WisdomApp() {
   const installPrompt = useRef(null);
   const dragStart = useRef(null);
   const copiedTimer = useRef(null);
+  const [favorites, setFavorites] = useState([]); // id цитат, новые в начале
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const lastIndex = useRef(0);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -94,6 +116,11 @@ export default function WisdomApp() {
 
     const now = dayKey();
     setToday(now);
+
+    try {
+      const stored = JSON.parse(store.get('wisdom-favorites') || '[]');
+      if (Array.isArray(stored)) setFavorites(stored.filter((id) => typeof id === 'string'));
+    } catch {}
 
     // Ссылка, которой поделились, открывает ту самую цитату, если она ещё в ленте.
     const linked = parseDayKey(params.get('d'));
@@ -200,13 +227,57 @@ export default function WisdomApp() {
     const onKey = (e) => {
       if (e.key === 'ArrowLeft') go(-1);
       if (e.key === 'ArrowRight') go(1);
-      if (e.key === 'Escape') setShowShare(false);
+      if (e.key === 'Escape') { setShowShare(false); setShowFavorites(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [go]);
 
   useEffect(() => () => clearTimeout(copiedTimer.current), []);
+
+  useEffect(() => {
+    if (lastIndex.current !== index) buzz();
+    lastIndex.current = index;
+  }, [index]);
+
+  const byId = useMemo(() => new Map((active?.quotes || []).map((q) => [q.id, q])), [active]);
+  const favoriteQuotes = favorites.map((id) => byId.get(id)).filter(Boolean);
+
+  function toggleFavorite(id) {
+    buzz(12);
+    setFavorites((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [id, ...prev];
+      store.set('wisdom-favorites', JSON.stringify(next));
+      return next;
+    });
+  }
+
+  // Вертикальная картинка для сторис и статусов: на телефоне уходит в системное «Поделиться»
+  // (оттуда же — «Сохранить в Фото»), на десктопе скачивается файлом.
+  async function handleSaveImage() {
+    if (!current || saving) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/og?d=${current.day}&lang=${lang}&format=story`);
+      if (!response.ok) throw new Error(String(response.status));
+      const blob = await response.blob();
+      const file = new File([blob], `wisdom-${current.day}.png`, { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] });
+      } else {
+        const href = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = href;
+        link.download = file.name;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(href), 1000);
+      }
+    } catch {
+      // офлайн или пользователь закрыл системное окно — молча остаёмся как были
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function switchLang(code) {
     setWantedLang(code);
@@ -299,6 +370,14 @@ export default function WisdomApp() {
     fontSize: 11, letterSpacing: '0.12em',
   };
 
+  const iconButton = {
+    ...pill, width: 44, height: 44, padding: 0, flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  };
+
+  // последняя цитата убрана из избранного — пустой список закрываем
+  if (showFavorites && favoriteQuotes.length === 0) setShowFavorites(false);
+
   return (
     <main dir={dir} style={{
       minHeight: '100dvh',
@@ -389,8 +468,16 @@ export default function WisdomApp() {
             ))}
           </div>
 
+          <div dir="ltr" style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12 }}>
+          <button onClick={() => toggleFavorite(current.quote.id)}
+            aria-pressed={favorites.includes(current.quote.id)}
+            aria-label={favorites.includes(current.quote.id) ? ui.unfavorite : ui.favorite}
+            title={favorites.includes(current.quote.id) ? ui.unfavorite : ui.favorite}
+            style={iconButton}>
+            <Heart filled={favorites.includes(current.quote.id)} />
+          </button>
           <button onClick={handleShare} aria-expanded={showShare} style={{
-            ...pill, marginTop: 12, padding: '13px 28px',
+            ...pill, padding: '13px 28px',
             fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
             display: 'flex', alignItems: 'center', gap: 9,
           }}>
@@ -401,6 +488,13 @@ export default function WisdomApp() {
             </svg>
             {ui.share}
           </button>
+          <button onClick={handleSaveImage} disabled={saving} aria-label={ui.saveImage} title={ui.saveImage}
+            style={{ ...iconButton, opacity: saving ? 0.5 : 1 }}>
+            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 4v11" /><path d="M7.5 10.5 12 15l4.5-4.5" /><path d="M5 19.5h14" />
+            </svg>
+          </button>
+          </div>
 
           {/* Запасной вариант там, где нет системного окна «Поделиться» (десктоп) */}
           {showShare && (
@@ -414,9 +508,48 @@ export default function WisdomApp() {
             </div>
           )}
 
-          <footer style={{ marginTop: 32, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: SUBTLE }}>
-            {ui.appName} &middot; <span dir="ltr">{dayOfYear(today)} / {daysInYear(today)}</span>
+          <footer style={{ marginTop: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: SUBTLE }}>
+            {favoriteQuotes.length > 0 && (
+              <button onClick={() => setShowFavorites(true)} style={{
+                background: 'none', border: 'none', padding: '8px 12px', cursor: 'pointer',
+                color: 'rgba(255,255,255,0.7)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase',
+                display: 'flex', alignItems: 'center', gap: 7,
+              }}>
+                <Heart filled size={11} />
+                {ui.favorites} &middot; {favoriteQuotes.length}
+              </button>
+            )}
+            <div>{ui.appName} &middot; <span dir="ltr">{dayOfYear(today)} / {daysInYear(today)}</span></div>
           </footer>
+        </div>
+      )}
+
+      {showFavorites && (
+        <div role="dialog" aria-modal="true" aria-label={ui.favorites} className="sheet"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowFavorites(false); }}>
+          <div className="sheet-panel">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <div style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)' }}>
+                {ui.favorites}
+              </div>
+              <button onClick={() => setShowFavorites(false)} aria-label={ui.close} style={{
+                background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)',
+                fontSize: 26, lineHeight: 1, cursor: 'pointer', padding: '4px 8px',
+              }}>&times;</button>
+            </div>
+            {favoriteQuotes.map((q) => (
+              <div key={q.id} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '18px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: '0 0 8px', fontSize: 16, lineHeight: 1.6, fontStyle: 'italic' }}>{q.text}</p>
+                  <div style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: SUBTLE }}>{q.author}</div>
+                </div>
+                <button onClick={() => toggleFavorite(q.id)} aria-label={ui.unfavorite} title={ui.unfavorite}
+                  style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.75)', cursor: 'pointer', padding: 8, flexShrink: 0 }}>
+                  <Heart filled />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
