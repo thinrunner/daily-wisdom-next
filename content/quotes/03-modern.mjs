@@ -359,6 +359,7 @@ export const quotes = [
 
   // Curie — quoted in Ève Curie, Madame Curie
   { mood: "strength", author: "marie-curie",
+    source: { ru: "Ева Кюри. «Мария Кюри»", en: "Ève Curie, Madame Curie", he: "אב קירי, מאדאם קירי", ro: "Ève Curie, Doamna Curie" },
     ru: "Жизнь никому из нас не даётся легко. Ну и что же? Надо иметь настойчивость, а главное — уверенность в себе.",
     en: "Life is not easy for any of us. But what of that? We must have perseverance and above all confidence in ourselves.",
     he: "החיים אינם קלים לאיש מאיתנו. אז מה? צריך התמדה, ומעל הכול אמון בעצמנו.",
@@ -388,8 +389,9 @@ export const quotes = [
 
   // Edison
   { mood: "action", author: "thomas-edison",
+    source: { ru: "Harper's Monthly, 1932", en: "Harper's Monthly, 1932", he: "Harper's Monthly, 1932", ro: "Harper's Monthly, 1932" },
     ru: "Гений — это один процент вдохновения и девяносто девять процентов пота.",
-    en: "Genius is one per cent inspiration and ninety-nine per cent perspiration.",
+    en: "Genius is one per cent inspiration, ninety-nine per cent perspiration.",
     he: "גאונות היא אחוז אחד השראה ותשעים ותשעה אחוזים זיעה.",
     ro: "Geniul înseamnă unu la sută inspirație și nouăzeci și nouă la sută transpirație." },
 
@@ -397,9 +399,9 @@ export const quotes = [
   { mood: "action", author: "leonardo-da-vinci",
     source: { ru: "«Записные книжки»", en: "Notebooks", he: "מחברות", ro: "Caiete" },
     ru: "Железо ржавеет, не находя себе применения, стоячая вода гниёт или на холоде замерзает, а ум человека, не находя себе применения, чахнет.",
-    en: "Iron rusts from disuse; stagnant water loses its purity and in cold weather becomes frozen; even so does inaction sap the vigor of the mind.",
-    he: "ברזל מחליד כשאין משתמשים בו, מים עומדים מאבדים את צלילותם וקופאים בקור; כך גם חוסר המעש מתיש את כוח המחשבה.",
-    ro: "Fierul ruginește când nu e folosit, apa stătută își pierde limpezimea și îngheață la frig; la fel și nelucrarea slăbește vigoarea minții." },
+    en: "Just as iron rusts unless it is used, and water putrefies or, in cold, turns to ice, so our intellect spoils unless it is kept in use.",
+    he: "כשם שהברזל מחליד כשאין משתמשים בו, והמים מבאישים או קופאים בקור, כך גם השכל מתקלקל כשאין מפעילים אותו.",
+    ro: "Precum fierul ruginește nefolosit, iar apa se strică ori, la frig, îngheață, tot așa și mintea se strică dacă nu e pusă la lucru." },
 
   // Van Gogh — letters to Theo, 1881 and 1882
   { mood: "courage", author: "vincent-van-gogh",
@@ -434,10 +436,10 @@ export const quotes = [
   // Chaplin — song "Swing Little Girl" (The Circus)
   { mood: "joy", author: "charlie-chaplin",
     source: { ru: "Песня «Swing Little Girl»", en: "Swing Little Girl", he: "השיר Swing Little Girl", ro: "Cântecul „Swing Little Girl”" },
-    ru: "Ты никогда не увидишь радугу, если смотришь вниз.",
-    en: "You'll never find a rainbow if you're looking down.",
-    he: "לעולם לא תמצא קשת בענן אם תביט למטה.",
-    ro: "Nu vei găsi niciodată un curcubeu dacă privești în jos." },
+    ru: "Ты никогда не найдёшь радугу, если смотришь вниз.",
+    en: "You'll never find rainbows if you're looking down.",
+    he: "לעולם לא תמצא קשתות בענן אם תביט למטה.",
+    ro: "Nu vei găsi niciodată curcubeie dacă privești în jos." },
 
   // Earhart — poem "Courage"
   { mood: "courage", author: "amelia-earhart",
@@ -461,20 +463,21 @@ export const quotes = [
     he: "חשוב על כל היופי שעוד נותר סביבך, והיה מאושר.",
     ro: "Gândește-te la toată frumusețea care a rămas încă în jurul tău și fii fericit." },
 
-  // Bruce Lee — interview, 1971
+  // Bruce Lee — The Pierre Berton Show, 1971 (abridged)
   { mood: "calm", author: "bruce-lee",
-    source: { ru: "Интервью, 1971", en: "Interview, 1971", he: "ריאיון, 1971", ro: "Interviu, 1971" },
-    ru: "Освободи свой ум, будь бесформенным, как вода. Будь водой, друг мой.",
-    en: "Empty your mind, be formless, shapeless, like water. Be water, my friend.",
-    he: "רוקן את מחשבותיך, היה חסר צורה, כמו מים. היה מים, ידידי.",
-    ro: "Golește-ți mintea, fii fără formă, asemenea apei. Fii apă, prietene." },
+    source: { ru: "«Шоу Пьера Бертона», 1971", en: "The Pierre Berton Show, 1971", he: "המופע של פייר ברטון, 1971", ro: "The Pierre Berton Show, 1971" },
+    ru: "Освободи свой ум, будь бесформенным, как вода… Будь водой, друг мой.",
+    en: "Empty your mind, be formless, shapeless — like water… Be water, my friend.",
+    he: "רוקן את מחשבותיך, היה חסר צורה, כמו מים… היה מים, ידידי.",
+    ro: "Golește-ți mintea, fii fără formă, asemenea apei… Fii apă, prietene." },
 
   // Goodall
   { mood: "purpose", author: "jane-goodall",
-    ru: "То, что вы делаете, меняет мир, и вам решать, какой именно след вы хотите оставить.",
-    en: "What you do makes a difference, and you have to decide what kind of difference you want to make.",
-    he: "מה שאתם עושים משנה, ועליכם להחליט איזה שינוי אתם רוצים לחולל.",
-    ro: "Ceea ce faci contează, iar tu trebuie să hotărăști ce fel de urmă vrei să lași." },
+    source: { ru: "«С любовью», 1999", en: "With Love, 1999", he: "באהבה, 1999", ro: "Cu dragoste, 1999" },
+    ru: "Каждый важен. У каждого есть своя роль. Каждый способен что-то изменить.",
+    en: "Every individual matters. Every individual has a role to play. Every individual makes a difference.",
+    he: "כל פרט חשוב. לכל פרט יש תפקיד. כל פרט משנה משהו.",
+    ro: "Fiecare individ contează. Fiecare are un rol de jucat. Fiecare schimbă ceva." },
 
   // Mary Oliver — "The Summer Day"; "Sometimes"
   { mood: "purpose", author: "mary-oliver",
@@ -508,7 +511,7 @@ export const quotes = [
   { mood: "love", author: "cs-lewis",
     source: { ru: "«Любовь»", en: "The Four Loves", he: "ארבע האהבות", ro: "Cele patru iubiri" },
     ru: "Дружба рождается в ту минуту, когда один человек говорит другому: «Как, и ты тоже? А я думал, я один такой…»",
-    en: "Friendship is born at that moment when one man says to another: ‘What! You too? I thought that no one but myself…’",
+    en: "Friendship is born at the moment when one man says to another: ‘What! You too? I thought that no one but myself…’",
     he: "חברות נולדת ברגע שבו אדם אחד אומר לאחר: מה, גם אתה? חשבתי שרק אני…",
     ro: "Prietenia se naște în clipa în care un om îi spune altuia: „Cum, și tu? Credeam că sunt singurul…”" },
   { mood: "inner", author: "cs-lewis",
@@ -520,11 +523,13 @@ export const quotes = [
 
   // Fred Rogers
   { mood: "inner", author: "fred-rogers",
+    source: { ru: "Выступление в Сенате США, 1969", en: "U.S. Senate testimony, 1969", he: "עדות בסנאט האמריקאי, 1969", ro: "Mărturie în Senatul SUA, 1969" },
     ru: "На всём свете нет другого такого человека, как ты, и ты нравишься мне именно таким, какой ты есть.",
     en: "There's no person in the whole world like you, and I like you just the way you are.",
     he: "אין בכל העולם אדם כמוך, ואני אוהב אותך בדיוק כמו שאתה.",
     ro: "Nu există în toată lumea nimeni ca tine, iar mie îmi placi exact așa cum ești." },
   { mood: "journey", author: "fred-rogers",
+    source: { ru: "«Мир глазами мистера Роджерса»", en: "The World According to Mister Rogers", he: "העולם על פי מיסטר רוג'רס", ro: "Lumea după Mister Rogers" },
     ru: "Часто, когда кажется, что ты подошёл к концу чего-то, на самом деле ты стоишь в начале чего-то другого.",
     en: "Often when you think you're at the end of something, you're at the beginning of something else.",
     he: "לעיתים קרובות, כשנדמה לך שהגעת לסופו של משהו, אתה נמצא בתחילתו של משהו אחר.",
