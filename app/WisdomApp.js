@@ -29,6 +29,8 @@ const store = {
 
 // Короткий тактильный отклик. Работает там, где браузер это умеет (Android); в остальных молча ничего не делает.
 function buzz(ms = 8) {
+  // до первого касания браузер вибрацию блокирует (например, когда ссылка открывает вчерашнюю карточку)
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
   try { navigator.vibrate?.(ms); } catch {}
 }
 
