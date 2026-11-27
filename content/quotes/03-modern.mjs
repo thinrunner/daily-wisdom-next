@@ -49,11 +49,13 @@ export const authors = {
 export const quotes = [
   // Thoreau — Walden
   { mood: "purpose", author: "henry-david-thoreau",
+    source: { ru: "«Уолден, или Жизнь в лесу»", en: "Walden", he: "וולדן", ro: "Walden" },
     ru: "Если ты выстроил воздушные замки, твой труд не пропал даром: там им и место. Теперь подведи под них фундамент.",
     en: "If you have built castles in the air, your work need not be lost; that is where they should be. Now put the foundations under them.",
     he: "אם בנית ארמונות באוויר, עמלך לא היה לשווא; שם מקומם. עכשיו הנח תחתיהם יסודות.",
     ro: "Dacă ai clădit castele în aer, munca ta nu e pierdută; acolo le este locul. Acum pune-le temelia." },
   { mood: "nature", author: "henry-david-thoreau",
+    source: { ru: "«Уолден, или Жизнь в лесу»", en: "Walden", he: "וולדן", ro: "Walden" },
     ru: "Небо не только над головой — оно и у нас под ногами.",
     en: "Heaven is under our feet as well as over our heads.",
     he: "השמיים נמצאים מתחת לרגלינו ממש כמו מעל לראשינו.",
@@ -61,11 +63,13 @@ export const quotes = [
 
   // Whitman — Song of Myself
   { mood: "inner", author: "walt-whitman",
+    source: { ru: "«Песня о себе»", en: "Song of Myself", he: "שירת עצמי", ro: "Cântec despre mine" },
     ru: "Я существую таким, каков я есть, — и этого довольно.",
     en: "I exist as I am, that is enough.",
     he: "אני קיים כפי שאני, ודי בכך.",
     ro: "Exist așa cum sunt, și asta e de ajuns." },
   { mood: "cosmos", author: "walt-whitman",
+    source: { ru: "«Песня о себе»", en: "Song of Myself", he: "שירת עצמי", ro: "Cântec despre mine" },
     ru: "Я верю, что листик травы не меньше подёнщины звёзд.",
     en: "I believe a leaf of grass is no less than the journey-work of the stars.",
     he: "אני מאמין שעלה עשב אינו נופל ממלאכת הכוכבים.",
@@ -73,11 +77,13 @@ export const quotes = [
 
   // Dickinson
   { mood: "peace", author: "emily-dickinson",
+    source: { ru: "«Надежда — это пташка…»", en: "“Hope” is the thing with feathers", he: "התקווה היא בעלת הנוצות", ro: "Speranța e făptura cu pene" },
     ru: "Надежда — это пташка, что гнездится в душе, поёт свою мелодию без слов и никогда не умолкает.",
     en: "Hope is the thing with feathers that perches in the soul, and sings the tune without the words, and never stops at all.",
     he: "התקווה היא בעלת הנוצות השוכנת בנשמה, שרה את המנגינה בלי המילים ואינה חדלה לעולם.",
     ro: "Speranța e făptura cu pene care se cuibărește în suflet, cântă melodia fără cuvinte și nu se oprește niciodată." },
   { mood: "calm", author: "emily-dickinson",
+    source: { ru: "«Вечность состоит из „сейчас“»", en: "Forever – is composed of Nows", he: "הנצח מורכב מרגעים של עכשיו", ro: "Veșnicia e alcătuită din clipe de acum" },
     ru: "Вечность состоит из множества «сейчас».",
     en: "Forever is composed of Nows.",
     he: "הנצח מורכב מרגעים של עכשיו.",
@@ -85,6 +91,7 @@ export const quotes = [
 
   // Franklin — Poor Richard's Almanack
   { mood: "action", author: "benjamin-franklin",
+    source: { ru: "«Альманах бедного Ричарда»", en: "Poor Richard's Almanack", he: "האלמנך של ריצ'רד המסכן", ro: "Almanahul sărmanului Richard" },
     ru: "Хорошо сделанное лучше хорошо сказанного.",
     en: "Well done is better than well said.",
     he: "מה שנעשה היטב עדיף על מה שנאמר יפה.",
@@ -92,6 +99,7 @@ export const quotes = [
 
   // Lincoln — letter to Isham Reavis, 1855
   { mood: "strength", author: "abraham-lincoln",
+    source: { ru: "Письмо Айшему Ривису, 1855", en: "Letter to Isham Reavis, 1855", he: "מכתב לאיישם ריוויס, 1855", ro: "Scrisoare către Isham Reavis, 1855" },
     ru: "Всегда помните: ваша собственная решимость добиться успеха важнее всего остального.",
     en: "Always bear in mind that your own resolution to succeed is more important than any other one thing.",
     he: "זכרו תמיד: הנחישות שלכם להצליח חשובה יותר מכל דבר אחר.",
@@ -99,6 +107,7 @@ export const quotes = [
 
   // Eleanor Roosevelt — You Learn by Living
   { mood: "courage", author: "eleanor-roosevelt",
+    source: { ru: "«Учишься, пока живёшь»", en: "You Learn by Living", he: "לומדים מהחיים", ro: "Înveți trăind" },
     ru: "Вы обретаете силу, мужество и уверенность всякий раз, когда останавливаетесь и смотрите страху прямо в лицо.",
     en: "You gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.",
     he: "אנו צוברים כוח, אומץ וביטחון בכל פעם שאנו עוצרים ומביטים לפחד בעיניים.",
@@ -106,6 +115,7 @@ export const quotes = [
 
   // Keller — Optimism
   { mood: "strength", author: "helen-keller",
+    source: { ru: "«Оптимизм»", en: "Optimism", he: "אופטימיות", ro: "Optimism" },
     ru: "Хотя мир полон страданий, он полон и побед над ними.",
     en: "Although the world is full of suffering, it is full also of the overcoming of it.",
     he: "אף שהעולם מלא סבל, הוא מלא גם בהתגברות עליו.",
@@ -113,11 +123,13 @@ export const quotes = [
 
   // William James
   { mood: "calm", author: "william-james",
+    source: { ru: "«Принципы психологии»", en: "The Principles of Psychology", he: "עקרונות הפסיכולוגיה", ro: "Principiile psihologiei" },
     ru: "Искусство быть мудрым — это искусство знать, на что не стоит обращать внимания.",
     en: "The art of being wise is the art of knowing what to overlook.",
     he: "אמנות החוכמה היא האמנות לדעת ממה להתעלם.",
     ro: "Arta de a fi înțelept este arta de a ști ce să treci cu vederea." },
   { mood: "vitality", author: "william-james",
+    source: { ru: "«Воля к вере»", en: "The Will to Believe", he: "הרצון להאמין", ro: "Voința de a crede" },
     ru: "Не бойтесь жизни. Верьте, что жить стоит, — и ваша вера поможет этому сбыться.",
     en: "Be not afraid of life. Believe that life is worth living, and your belief will help create the fact.",
     he: "אל תפחדו מהחיים. האמינו שכדאי לחיות, והאמונה שלכם תעזור להפוך זאת לעובדה.",
@@ -125,11 +137,13 @@ export const quotes = [
 
   // Shakespeare — Measure for Measure; The Merchant of Venice
   { mood: "courage", author: "william-shakespeare",
+    source: { ru: "«Мера за меру»", en: "Measure for Measure", he: "מידה כנגד מידה", ro: "Măsură pentru măsură" },
     ru: "Наши сомненья — предатели: они заставляют нас терять то доброе, чего мы могли бы достичь, если бы не боялись попытаться.",
     en: "Our doubts are traitors, and make us lose the good we oft might win, by fearing to attempt.",
     he: "ספקותינו בוגדים בנו: בגללם אנו מפסידים את הטוב שיכולנו להשיג, רק מפני שחששנו לנסות.",
     ro: "Îndoielile noastre sunt trădători: ne fac să pierdem binele pe care l-am putea câștiga, de teamă să încercăm." },
   { mood: "love", author: "william-shakespeare",
+    source: { ru: "«Венецианский купец»", en: "The Merchant of Venice", he: "הסוחר מוונציה", ro: "Neguțătorul din Veneția" },
     ru: "Как далеко сияет эта маленькая свеча! Так светит доброе дело в недобром мире.",
     en: "How far that little candle throws his beams! So shines a good deed in a naughty world.",
     he: "כמה רחוק שולח הנר הקטן את קרניו! כך מאיר מעשה טוב בעולם קשה.",
@@ -137,11 +151,13 @@ export const quotes = [
 
   // Blake — Auguries of Innocence; Proverbs of Hell
   { mood: "cosmos", author: "william-blake",
+    source: { ru: "«Прорицания невинности»", en: "Auguries of Innocence", he: "אותות התמימות", ro: "Auguriile inocenței" },
     ru: "В одном мгновенье видеть вечность, огромный мир — в зерне песка, в единой горсти — бесконечность и небо — в чашечке цветка.",
     en: "To see a World in a Grain of Sand and a Heaven in a Wild Flower, hold Infinity in the palm of your hand and Eternity in an hour.",
     he: "לראות עולם בגרגר חול ורקיע בפרח בר, להחזיק את האינסוף בכף היד ואת הנצח בשעה אחת.",
     ro: "Să vezi o lume într-un fir de nisip și un cer într-o floare de câmp, să ții nemărginirea în palmă și veșnicia într-un ceas." },
   { mood: "growth", author: "william-blake",
+    source: { ru: "«Бракосочетание Рая и Ада»", en: "The Marriage of Heaven and Hell", he: "נישואי העדן והשאול", ro: "Căsătoria Cerului cu Iadul" },
     ru: "Ни одна птица не взлетит слишком высоко, если летит на собственных крыльях.",
     en: "No bird soars too high, if he soars with his own wings.",
     he: "שום ציפור אינה ממריאה גבוה מדי, אם היא ממריאה בכנפיה שלה.",
@@ -149,6 +165,7 @@ export const quotes = [
 
   // Keats — Endymion
   { mood: "joy", author: "john-keats",
+    source: { ru: "«Эндимион»", en: "Endymion", he: "אנדימיון", ro: "Endymion" },
     ru: "Прекрасное пленяет навсегда. К нему не остываешь. Никогда не впасть ему в ничтожество.",
     en: "A thing of beauty is a joy for ever: its loveliness increases; it will never pass into nothingness.",
     he: "דבר של יופי הוא שמחה לעולם: חינו הולך וגדל, והוא לא יהפוך לעולם לאין.",
@@ -156,11 +173,13 @@ export const quotes = [
 
   // Dickens — Our Mutual Friend; A Christmas Carol
   { mood: "love", author: "charles-dickens",
+    source: { ru: "«Наш общий друг»", en: "Our Mutual Friend", he: "ידידנו המשותף", ro: "Prietenul nostru comun" },
     ru: "Никто не бесполезен в этом мире, если он облегчает ношу другому.",
     en: "No one is useless in this world who lightens the burden of it for any one else.",
     he: "אין אדם מיותר בעולם הזה, אם הוא מקל את המשא על מישהו אחר.",
     ro: "Nimeni nu e de prisos pe lumea aceasta dacă ușurează povara altcuiva." },
   { mood: "joy", author: "charles-dickens",
+    source: { ru: "«Рождественская песнь в прозе»", en: "A Christmas Carol", he: "מזמור חג המולד", ro: "Colind de Crăciun" },
     ru: "На свете нет ничего более заразительного, чем смех и весёлое расположение духа.",
     en: "There is nothing in the world so irresistibly contagious as laughter and good-humour.",
     he: "אין בעולם דבר מידבק יותר מצחוק וממצב רוח טוב.",
@@ -168,11 +187,13 @@ export const quotes = [
 
   // George Eliot — Middlemarch; letter, 1841
   { mood: "love", author: "george-eliot",
+    source: { ru: "«Мидлмарч»", en: "Middlemarch", he: "מידלמארץ'", ro: "Middlemarch" },
     ru: "Ради чего мы живём, если не ради того, чтобы облегчать жизнь друг другу?",
     en: "What do we live for, if it is not to make life less difficult to each other?",
     he: "לשם מה אנחנו חיים, אם לא כדי להקל זה על זה את החיים?",
     ro: "Pentru ce trăim, dacă nu ca să ne facem viața mai ușoară unii altora?" },
   { mood: "nature", author: "george-eliot",
+    source: { ru: "Письмо Марии Льюис, 1841", en: "Letter to Maria Lewis, 1841", he: "מכתב למריה לואיס, 1841", ro: "Scrisoare către Maria Lewis, 1841" },
     ru: "Чудесная осень! Я предана ей всей душой, и будь я птицей, я летала бы по свету вслед за осенью.",
     en: "Delicious autumn! My very soul is wedded to it, and if I were a bird I would fly about the earth seeking the successive autumns.",
     he: "סתיו נפלא! נפשי קשורה בו, ואילו הייתי ציפור, הייתי עפה סביב העולם בעקבות הסתיו.",
@@ -180,11 +201,13 @@ export const quotes = [
 
   // Stevenson — El Dorado; An Apology for Idlers
   { mood: "journey", author: "robert-louis-stevenson",
+    source: { ru: "«Эльдорадо»", en: "El Dorado", he: "אל דוראדו", ro: "El Dorado" },
     ru: "Странствовать с надеждой лучше, чем прибыть на место, а подлинный успех — в самом труде.",
     en: "To travel hopefully is a better thing than to arrive, and the true success is to labour.",
     he: "לנסוע מתוך תקווה טוב יותר מלהגיע, וההצלחה האמיתית היא בעמל עצמו.",
     ro: "A călători cu speranță e mai bine decât a ajunge, iar adevărata izbândă este truda însăși." },
   { mood: "joy", author: "robert-louis-stevenson",
+    source: { ru: "«В защиту праздных»", en: "An Apology for Idlers", he: "כתב הגנה על הבטלנים", ro: "Apologia trândavilor" },
     ru: "Нет долга, который мы недооценивали бы так, как долг быть счастливыми.",
     en: "There is no duty we so much underrate as the duty of being happy.",
     he: "אין חובה שאנו ממעיטים בערכה כמו החובה להיות מאושרים.",
@@ -192,16 +215,19 @@ export const quotes = [
 
   // Chesterton — All Things Considered; Tremendous Trifles; A Short History of England
   { mood: "journey", author: "gk-chesterton",
+    source: { ru: "«Всё принимая во внимание»", en: "All Things Considered", he: "בהתחשב בכול", ro: "Luând totul în considerare" },
     ru: "Приключение — это всего лишь правильно понятое неудобство. Неудобство — всего лишь неправильно понятое приключение.",
     en: "An adventure is only an inconvenience rightly considered. An inconvenience is only an adventure wrongly considered.",
     he: "הרפתקה היא בסך הכול אי־נוחות שמביטים בה נכון. אי־נוחות היא בסך הכול הרפתקה שמביטים בה לא נכון.",
     ro: "O aventură e doar o neplăcere privită cum trebuie. O neplăcere e doar o aventură privită greșit." },
   { mood: "truth", author: "gk-chesterton",
+    source: { ru: "«Потрясающие пустяки»", en: "Tremendous Trifles", he: "זוטות כבירות", ro: "Fleacuri formidabile" },
     ru: "Мир никогда не оскудеет чудесами — ему может не хватить лишь умения удивляться.",
     en: "The world will never starve for want of wonders; but only for want of wonder.",
     he: "העולם לעולם לא יסבול ממחסור בפלאים, אלא רק ממחסור בהתפעלות.",
     ro: "Lumea nu va duce niciodată lipsă de minuni, ci doar de mirare." },
   { mood: "joy", author: "gk-chesterton",
+    source: { ru: "«Краткая история Англии»", en: "A Short History of England", he: "היסטוריה קצרה של אנגליה", ro: "Scurtă istorie a Angliei" },
     ru: "Я убеждён, что благодарность — высшая форма мысли, а признательность — это счастье, удвоенное удивлением.",
     en: "I would maintain that thanks are the highest form of thought; and that gratitude is happiness doubled by wonder.",
     he: "אני סבור שתודה היא צורת המחשבה הנעלה ביותר, ושהכרת טובה היא אושר שהוכפל בפליאה.",
@@ -209,11 +235,13 @@ export const quotes = [
 
   // Shaw — Back to Methuselah; Man and Superman (Epistle Dedicatory)
   { mood: "creativity", author: "george-bernard-shaw",
+    source: { ru: "«Назад к Мафусаилу»", en: "Back to Methuselah", he: "בחזרה אל מתושלח", ro: "Înapoi la Matusalem" },
     ru: "Вы видите то, что есть, и спрашиваете: «Почему?» А я мечтаю о том, чего никогда не было, и говорю: «Почему бы и нет?»",
     en: "You see things; and you say ‘Why?’ But I dream things that never were; and I say ‘Why not?’",
     he: "אתם רואים דברים ושואלים: למה? ואני חולם על דברים שמעולם לא היו ושואל: למה לא?",
     ro: "Voi vedeți lucrurile și întrebați: „De ce?” Eu visez lucruri care n-au existat niciodată și întreb: „De ce nu?”" },
   { mood: "purpose", author: "george-bernard-shaw",
+    source: { ru: "«Человек и сверхчеловек»", en: "Man and Superman", he: "אדם ואדם עליון", ro: "Om și supraom" },
     ru: "Вот подлинная радость жизни — служить цели, которую сам признаёшь великой.",
     en: "This is the true joy in life, the being used for a purpose recognized by yourself as a mighty one.",
     he: "זוהי השמחה האמיתית בחיים: לשמש מטרה שאתה עצמך מכיר בגדולתה.",
@@ -221,6 +249,7 @@ export const quotes = [
 
   // Woolf — A Room of One's Own
   { mood: "calm", author: "virginia-woolf",
+    source: { ru: "«Своя комната»", en: "A Room of One's Own", he: "חדר משלך", ro: "O cameră separată" },
     ru: "Не нужно спешить. Не нужно блистать. Не нужно быть никем, кроме себя.",
     en: "No need to hurry. No need to sparkle. No need to be anybody but oneself.",
     he: "אין צורך למהר. אין צורך לנצנץ. אין צורך להיות אף אחד מלבד עצמך.",
@@ -228,6 +257,7 @@ export const quotes = [
 
   // Hemingway — The Old Man and the Sea
   { mood: "strength", author: "ernest-hemingway",
+    source: { ru: "«Старик и море»", en: "The Old Man and the Sea", he: "הזקן והים", ro: "Bătrânul și marea" },
     ru: "Человек не для того создан, чтобы терпеть поражения. Человека можно уничтожить, но его нельзя победить.",
     en: "But man is not made for defeat. A man can be destroyed but not defeated.",
     he: "האדם לא נועד לתבוסה. אפשר להשמיד אדם, אבל אי אפשר להביס אותו.",
@@ -235,11 +265,13 @@ export const quotes = [
 
   // Steinbeck — East of Eden; Travels with Charley
   { mood: "peace", author: "john-steinbeck",
+    source: { ru: "«К востоку от Эдема»", en: "East of Eden", he: "קדמת עדן", ro: "La răsărit de Eden" },
     ru: "И теперь, когда тебе не нужно быть совершенным, ты можешь быть хорошим.",
     en: "And now that you don't have to be perfect, you can be good.",
     he: "ועכשיו, כשאינך חייב להיות מושלם, אתה יכול להיות טוב.",
     ro: "Iar acum, că nu mai trebuie să fii perfect, poți fi bun." },
   { mood: "journey", author: "john-steinbeck",
+    source: { ru: "«Путешествие с Чарли в поисках Америки»", en: "Travels with Charley", he: "מסעותיי עם צ'רלי", ro: "Călătorii cu Charley" },
     ru: "После долгих лет борьбы мы понимаем: не мы совершаем путешествие, а путешествие ведёт нас.",
     en: "We find after years of struggle that we do not take a trip; a trip takes us.",
     he: "אחרי שנים של מאבק אנו מגלים שלא אנחנו יוצאים למסע; המסע לוקח אותנו.",
@@ -247,16 +279,19 @@ export const quotes = [
 
   // Muir — Steep Trails; Our National Parks; My First Summer in the Sierra
   { mood: "nature", author: "john-muir",
+    source: { ru: "«Крутые тропы»", en: "Steep Trails", he: "שבילים תלולים", ro: "Poteci abrupte" },
     ru: "С каждой прогулки на природе человек приносит гораздо больше, чем искал.",
     en: "In every walk with Nature one receives far more than he seeks.",
     he: "בכל טיול בטבע אדם מקבל הרבה יותר ממה שביקש.",
     ro: "Din fiecare plimbare în natură primești mult mai mult decât ai căutat." },
   { mood: "nature", author: "john-muir",
+    source: { ru: "«Наши национальные парки»", en: "Our National Parks", he: "הפארקים הלאומיים שלנו", ro: "Parcurile noastre naționale" },
     ru: "Поднимитесь в горы и услышьте их добрые вести. Покой природы наполнит вас, как солнечный свет наполняет деревья.",
     en: "Climb the mountains and get their good tidings. Nature's peace will flow into you as sunshine flows into trees.",
     he: "טפסו על ההרים וקבלו את בשורתם הטובה. שלוות הטבע תזרום אליכם כמו שאור השמש זורם אל העצים.",
     ro: "Urcă pe munți și primește veștile lor bune. Pacea naturii se va revărsa în tine așa cum lumina soarelui se revarsă în copaci." },
   { mood: "cosmos", author: "john-muir",
+    source: { ru: "«Моё первое лето в Сьерре»", en: "My First Summer in the Sierra", he: "הקיץ הראשון שלי בסיירה", ro: "Prima mea vară în Sierra" },
     ru: "Стоит нам попытаться выделить что-то одно, как мы обнаруживаем, что оно связано со всем остальным во Вселенной.",
     en: "When we try to pick out anything by itself, we find it hitched to everything else in the Universe.",
     he: "כשאנו מנסים לבודד דבר כלשהו, אנו מגלים שהוא קשור לכל השאר ביקום.",
@@ -264,11 +299,13 @@ export const quotes = [
 
   // Carson — The Sense of Wonder
   { mood: "nature", author: "rachel-carson",
+    source: { ru: "«Чувство удивления»", en: "The Sense of Wonder", he: "חוש הפליאה", ro: "Simțul mirării" },
     ru: "Те, кто созерцает красоту земли, находят в ней запас сил, которого хватает на всю жизнь.",
     en: "Those who contemplate the beauty of the earth find reserves of strength that will endure as long as life lasts.",
     he: "מי שמתבונן ביופייה של האדמה מוצא מאגרי כוח שיעמדו לו כל ימי חייו.",
     ro: "Cei care contemplă frumusețea pământului găsesc rezerve de putere care țin cât viața." },
   { mood: "peace", author: "rachel-carson",
+    source: { ru: "«Чувство удивления»", en: "The Sense of Wonder", he: "חוש הפליאה", ro: "Simțul mirării" },
     ru: "Есть что-то бесконечно целительное в повторяющихся напевах природы — в уверенности, что за ночью придёт рассвет, а за зимой — весна.",
     en: "There is something infinitely healing in the repeated refrains of nature — the assurance that dawn comes after night, and spring after the winter.",
     he: "יש משהו מרפא עד אין קץ בפזמונים החוזרים של הטבע: הידיעה שהשחר בא אחרי הלילה, והאביב אחרי החורף.",
@@ -276,6 +313,7 @@ export const quotes = [
 
   // Russell — What I Believe
   { mood: "truth", author: "bertrand-russell",
+    source: { ru: "«Во что я верю»", en: "What I Believe", he: "במה אני מאמין", ro: "În ce cred" },
     ru: "Хорошая жизнь — это жизнь, вдохновляемая любовью и направляемая знанием.",
     en: "The good life is one inspired by love and guided by knowledge.",
     he: "החיים הטובים הם חיים שהאהבה מעוררת והידע מכוון.",
@@ -283,11 +321,13 @@ export const quotes = [
 
   // Jung — letter, 1916; Modern Man in Search of a Soul
   { mood: "inner", author: "carl-jung",
+    source: { ru: "Письмо Фанни Боудич, 1916", en: "Letter to Fanny Bowditch, 1916", he: "מכתב לפאני באודיץ', 1916", ro: "Scrisoare către Fanny Bowditch, 1916" },
     ru: "Кто смотрит вовне — видит сны; кто смотрит внутрь себя — пробуждается.",
     en: "Who looks outside, dreams; who looks inside, awakes.",
     he: "מי שמביט החוצה חולם; מי שמביט פנימה מתעורר.",
     ro: "Cine privește în afară visează; cine privește înăuntru se trezește." },
   { mood: "love", author: "carl-jung",
+    source: { ru: "«Современный человек в поисках души»", en: "Modern Man in Search of a Soul", he: "האדם המודרני בחיפוש אחר נשמה", ro: "Omul modern în căutarea sufletului" },
     ru: "Встреча двух личностей подобна соприкосновению двух химических веществ: если есть хоть какая-то реакция, меняются оба.",
     en: "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.",
     he: "מפגש בין שני אנשים דומה למגע בין שני חומרים כימיים: אם מתרחשת תגובה, שניהם משתנים.",
@@ -295,6 +335,7 @@ export const quotes = [
 
   // Fromm — Man for Himself
   { mood: "growth", author: "erich-fromm",
+    source: { ru: "«Человек для себя»", en: "Man for Himself", he: "אדם לעצמו", ro: "Omul pentru sine" },
     ru: "Главная жизненная задача человека — дать жизнь самому себе, стать тем, чем он является потенциально.",
     en: "Man's main task in life is to give birth to himself, to become what he potentially is.",
     he: "המשימה העיקרית של האדם בחייו היא ללדת את עצמו, להיות מה שטמון בו.",
@@ -302,6 +343,7 @@ export const quotes = [
 
   // Darwin — On the Origin of Species
   { mood: "nature", author: "charles-darwin",
+    source: { ru: "«Происхождение видов»", en: "On the Origin of Species", he: "מוצא המינים", ro: "Originea speciilor" },
     ru: "Из такого простого начала развилось и продолжает развиваться бесконечное число самых прекрасных и самых изумительных форм.",
     en: "From so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved.",
     he: "מהתחלה פשוטה כל כך התפתחו, ועודן מתפתחות, אינספור צורות יפות ומופלאות מאין כמותן.",
@@ -309,6 +351,7 @@ export const quotes = [
 
   // Newton — letter to Robert Hooke, 1675
   { mood: "truth", author: "isaac-newton",
+    source: { ru: "Письмо Роберту Гуку, 1675", en: "Letter to Robert Hooke, 1675", he: "מכתב לרוברט הוק, 1675", ro: "Scrisoare către Robert Hooke, 1675" },
     ru: "Если я видел дальше других, то потому, что стоял на плечах гигантов.",
     en: "If I have seen further it is by standing on the shoulders of Giants.",
     he: "אם הרחקתי לראות, הרי זה משום שעמדתי על כתפי ענקים.",
@@ -323,11 +366,13 @@ export const quotes = [
 
   // Feynman — Cargo Cult Science; BBC Horizon interview, 1981
   { mood: "truth", author: "richard-feynman",
+    source: { ru: "«Наука самолётопоклонников», 1974", en: "Cargo Cult Science, 1974", he: "מדע כת המטען, 1974", ro: "Știința de tip cargo cult, 1974" },
     ru: "Первый принцип: нельзя обманывать самого себя — а себя обмануть легче всего.",
     en: "The first principle is that you must not fool yourself — and you are the easiest person to fool.",
     he: "העיקרון הראשון הוא שאסור לך לרמות את עצמך, ואת עצמך הכי קל לרמות.",
     ro: "Primul principiu este să nu te păcălești singur, iar pe tine însuți te păcălești cel mai ușor." },
   { mood: "inner", author: "richard-feynman",
+    source: { ru: "«Радость познания», 1981", en: "The Pleasure of Finding Things Out, 1981", he: "ההנאה שבגילוי דברים, 1981", ro: "Plăcerea de a descoperi lucruri, 1981" },
     ru: "По-моему, гораздо интереснее жить, не зная, чем иметь ответы, которые могут оказаться неверными.",
     en: "I think it's much more interesting to live not knowing than to have answers which might be wrong.",
     he: "אני חושב שהרבה יותר מעניין לחיות בלי לדעת מאשר להחזיק בתשובות שעלולות להיות שגויות.",
@@ -335,6 +380,7 @@ export const quotes = [
 
   // Hawking — 70th birthday lecture, 2012
   { mood: "cosmos", author: "stephen-hawking",
+    source: { ru: "Лекция к 70-летию, 2012", en: "70th birthday lecture, 2012", he: "הרצאת יום ההולדת ה-70, 2012", ro: "Prelegere la 70 de ani, 2012" },
     ru: "Не забывайте смотреть вверх, на звёзды, а не себе под ноги. Старайтесь осмыслить то, что видите, и думайте о том, почему существует Вселенная. Будьте любознательны.",
     en: "Remember to look up at the stars and not down at your feet. Try to make sense of what you see and wonder about what makes the universe exist. Be curious.",
     he: "זכרו להביט למעלה אל הכוכבים ולא למטה אל הרגליים. נסו להבין את מה שאתם רואים ותהו מה גורם ליקום להתקיים. היו סקרנים.",
@@ -349,6 +395,7 @@ export const quotes = [
 
   // Leonardo — Notebooks
   { mood: "action", author: "leonardo-da-vinci",
+    source: { ru: "«Записные книжки»", en: "Notebooks", he: "מחברות", ro: "Caiete" },
     ru: "Железо ржавеет, не находя себе применения, стоячая вода гниёт или на холоде замерзает, а ум человека, не находя себе применения, чахнет.",
     en: "Iron rusts from disuse; stagnant water loses its purity and in cold weather becomes frozen; even so does inaction sap the vigor of the mind.",
     he: "ברזל מחליד כשאין משתמשים בו, מים עומדים מאבדים את צלילותם וקופאים בקור; כך גם חוסר המעש מתיש את כוח המחשבה.",
@@ -356,11 +403,13 @@ export const quotes = [
 
   // Van Gogh — letters to Theo, 1881 and 1882
   { mood: "courage", author: "vincent-van-gogh",
+    source: { ru: "Письмо брату Тео, 1881", en: "Letter to Theo, 1881", he: "מכתב לתיאו, 1881", ro: "Scrisoare către Theo, 1881" },
     ru: "Какой была бы жизнь, если бы у нас не хватало смелости за что-нибудь взяться?",
     en: "What would life be if we had no courage to attempt anything?",
     he: "מה היו החיים אילו לא היה לנו האומץ לנסות דבר?",
     ro: "Ce ar fi viața dacă n-am avea curajul să încercăm ceva?" },
   { mood: "creativity", author: "vincent-van-gogh",
+    source: { ru: "Письмо брату Тео, 1882", en: "Letter to Theo, 1882", he: "מכתב לתיאו, 1882", ro: "Scrisoare către Theo, 1882" },
     ru: "Великое не создаётся порывом — оно складывается из череды малых дел, собранных воедино.",
     en: "Great things are not done by impulse, but by a series of small things brought together.",
     he: "דברים גדולים אינם נעשים בדחף רגעי, אלא בשורה של דברים קטנים שמצטרפים יחד.",
@@ -368,6 +417,7 @@ export const quotes = [
 
   // Rodin — L'Art (Testament)
   { mood: "vitality", author: "auguste-rodin",
+    source: { ru: "«Завещание»", en: "Testament", he: "צוואה", ro: "Testament" },
     ru: "Главное — волноваться, любить, надеяться, трепетать, жить.",
     en: "The main thing is to be moved, to love, to hope, to tremble, to live.",
     he: "העיקר הוא להתרגש, לאהוב, לקוות, לרעוד, לחיות.",
@@ -375,6 +425,7 @@ export const quotes = [
 
   // Beethoven — album entry, 1793
   { mood: "purpose", author: "ludwig-van-beethoven",
+    source: { ru: "Запись в альбом, 1793", en: "Album entry, 1793", he: "רישום באלבום, 1793", ro: "Însemnare în album, 1793" },
     ru: "Делать добро, где только можно, любить свободу превыше всего, никогда не отрекаться от правды, даже перед троном.",
     en: "Do good wherever you can, love liberty above all things, never deny the truth, even before the throne.",
     he: "לעשות טוב בכל מקום שאפשר, לאהוב את החירות מעל הכול, ולעולם לא להתכחש לאמת, אפילו מול כס המלכות.",
@@ -382,6 +433,7 @@ export const quotes = [
 
   // Chaplin — song "Swing Little Girl" (The Circus)
   { mood: "joy", author: "charlie-chaplin",
+    source: { ru: "Песня «Swing Little Girl»", en: "Swing Little Girl", he: "השיר Swing Little Girl", ro: "Cântecul „Swing Little Girl”" },
     ru: "Ты никогда не увидишь радугу, если смотришь вниз.",
     en: "You'll never find a rainbow if you're looking down.",
     he: "לעולם לא תמצא קשת בענן אם תביט למטה.",
@@ -389,6 +441,7 @@ export const quotes = [
 
   // Earhart — poem "Courage"
   { mood: "courage", author: "amelia-earhart",
+    source: { ru: "«Мужество»", en: "Courage", he: "אומץ", ro: "Curaj" },
     ru: "Мужество — это цена, которую жизнь взимает за дарованный покой.",
     en: "Courage is the price that Life exacts for granting peace.",
     he: "אומץ הוא המחיר שהחיים גובים תמורת השלווה.",
@@ -396,11 +449,13 @@ export const quotes = [
 
   // Anne Frank — "Give!"; Diary, 7 March 1944
   { mood: "action", author: "anne-frank",
+    source: { ru: "«Дай!»", en: "Give!", he: "תן!", ro: "Dăruiește!" },
     ru: "Как чудесно, что никому не нужно ждать ни минуты, чтобы начать делать мир лучше.",
     en: "How wonderful it is that nobody need wait a single moment before starting to improve the world.",
     he: "כמה נפלא שאיש אינו צריך לחכות אפילו רגע אחד לפני שיתחיל לשפר את העולם.",
     ro: "Cât de minunat e că nimeni nu trebuie să aștepte nicio clipă pentru a începe să facă lumea mai bună." },
   { mood: "joy", author: "anne-frank",
+    source: { ru: "«Убежище. Дневник в письмах»", en: "The Diary of a Young Girl", he: "יומנה של נערה", ro: "Jurnalul Annei Frank" },
     ru: "Думай обо всём прекрасном, что ещё осталось вокруг тебя, и будь счастлив.",
     en: "Think of all the beauty still left around you and be happy.",
     he: "חשוב על כל היופי שעוד נותר סביבך, והיה מאושר.",
@@ -408,6 +463,7 @@ export const quotes = [
 
   // Bruce Lee — interview, 1971
   { mood: "calm", author: "bruce-lee",
+    source: { ru: "Интервью, 1971", en: "Interview, 1971", he: "ריאיון, 1971", ro: "Interviu, 1971" },
     ru: "Освободи свой ум, будь бесформенным, как вода. Будь водой, друг мой.",
     en: "Empty your mind, be formless, shapeless, like water. Be water, my friend.",
     he: "רוקן את מחשבותיך, היה חסר צורה, כמו מים. היה מים, ידידי.",
@@ -422,11 +478,13 @@ export const quotes = [
 
   // Mary Oliver — "The Summer Day"; "Sometimes"
   { mood: "purpose", author: "mary-oliver",
+    source: { ru: "«Летний день»", en: "The Summer Day", he: "יום הקיץ", ro: "Ziua de vară" },
     ru: "Скажи, что ты собираешься делать со своей единственной, дикой и драгоценной жизнью?",
     en: "Tell me, what is it you plan to do with your one wild and precious life?",
     he: "אמור לי, מה בכוונתך לעשות בחייך היחידים, הפראיים והיקרים?",
     ro: "Spune-mi, ce ai de gând să faci cu singura ta viață, sălbatică și prețioasă?" },
   { mood: "creativity", author: "mary-oliver",
+    source: { ru: "«Иногда»", en: "Sometimes", he: "לפעמים", ro: "Uneori" },
     ru: "Наставление, как прожить жизнь: будь внимателен. Изумляйся. Рассказывай об этом.",
     en: "Instructions for living a life: Pay attention. Be astonished. Tell about it.",
     he: "הוראות לחיים: שים לב. התפעל. ספר על כך.",
@@ -434,11 +492,13 @@ export const quotes = [
 
   // Le Guin — The Left Hand of Darkness; The Lathe of Heaven
   { mood: "journey", author: "ursula-le-guin",
+    source: { ru: "«Левая рука тьмы»", en: "The Left Hand of Darkness", he: "צד שמאל של החושך", ro: "Mâna stângă a întunericului" },
     ru: "Хорошо, когда у пути есть цель; но в конечном счёте важен сам путь.",
     en: "It is good to have an end to journey toward; but it is the journey that matters, in the end.",
     he: "טוב שיש יעד לנסוע אליו; אבל בסופו של דבר, המסע עצמו הוא מה שחשוב.",
     ro: "E bine să ai o țintă spre care să călătorești; dar, până la urmă, călătoria însăși contează." },
   { mood: "love", author: "ursula-le-guin",
+    source: { ru: "«Резец небесный»", en: "The Lathe of Heaven", he: "מחרטת השמיים", ro: "Sfâșierea cerului" },
     ru: "Любовь не лежит на месте, как камень; её нужно делать, как хлеб, — всё время заново, каждый раз свежую.",
     en: "Love doesn't just sit there, like a stone, it has to be made, like bread; remade all the time, made new.",
     he: "אהבה אינה פשוט מונחת שם כמו אבן; צריך להכין אותה, כמו לחם, שוב ושוב, כל פעם מחדש.",
@@ -446,11 +506,13 @@ export const quotes = [
 
   // Lewis — The Four Loves; The Magician's Nephew
   { mood: "love", author: "cs-lewis",
+    source: { ru: "«Любовь»", en: "The Four Loves", he: "ארבע האהבות", ro: "Cele patru iubiri" },
     ru: "Дружба рождается в ту минуту, когда один человек говорит другому: «Как, и ты тоже? А я думал, я один такой…»",
     en: "Friendship is born at that moment when one man says to another: ‘What! You too? I thought that no one but myself…’",
     he: "חברות נולדת ברגע שבו אדם אחד אומר לאחר: מה, גם אתה? חשבתי שרק אני…",
     ro: "Prietenia se naște în clipa în care un om îi spune altuia: „Cum, și tu? Credeam că sunt singurul…”" },
   { mood: "inner", author: "cs-lewis",
+    source: { ru: "«Племянник чародея»", en: "The Magician's Nephew", he: "אחיינו של הקוסם", ro: "Nepotul magicianului" },
     ru: "То, что ты видишь и слышишь, во многом зависит от того, где ты стоишь, — и ещё от того, какой ты человек.",
     en: "For what you see and hear depends a good deal on where you are standing: it also depends on what sort of person you are.",
     he: "מה שאתה רואה ושומע תלוי במידה רבה במקום שבו אתה עומד; וזה תלוי גם באיזה מין אדם אתה.",
