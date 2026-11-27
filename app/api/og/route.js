@@ -1,140 +1,94 @@
-import { ImageResponse } from '@vercel/og';
-import { QUOTES, MOOD_THEMES } from '../../../lib/quotes';
-import { QUOTES_EN } from '../../../lib/quotes-en';
-import { QUOTES_HE } from '../../../lib/quotes-he';
-import { QUOTES_RO } from '../../../lib/quotes-ro';
-import { MONTHS, DAYS } from '../../../lib/i18n';
+import { ImageResponse } from 'next/og';
+import { quoteForDay, themeFor } from '../../../lib/quotes';
+import { QUOTES_BY_LANG, resolveShareParams } from '../../../lib/quotes-server';
+import { UI, formatDate, formatWeekday, isRTL } from '../../../lib/i18n';
 
-export const runtime = 'edge';
+const SUBTLE = 'rgba(255,255,255,0.5)';
 
-const QUOTES_BY_LANG = { ru: QUOTES, en: QUOTES_EN, he: QUOTES_HE, ro: QUOTES_RO };
-
-function getDayInTimezone(offsetHours = 2) {
-  const now = new Date();
-  const local = new Date(now.getTime() + offsetHours * 60 * 60 * 1000);
-  const start = new Date(Date.UTC(local.getUTCFullYear(), 0, 0));
-  const diff = local - start;
-  return Math.floor(diff / 86400000);
-}
+// Два формата одной карточки: превью ссылки (1200×630) и вертикальная картинка для сторис (1080×1920).
+const FORMATS = {
+  link: {
+    width: 1200, height: 630, card: 960, padding: '48px 80px', radius: 48, k: 1,
+    textSize: (n) => (n > 130 ? 28 : n > 90 ? 32 : n > 55 ? 36 : 40),
+  },
+  story: {
+    width: 1080, height: 1920, card: 920, padding: '120px 80px', radius: 64, k: 1.5,
+    textSize: (n) => (n > 130 ? 46 : n > 90 ? 52 : n > 55 ? 58 : 64),
+  },
+};
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const dayParam = searchParams.get('day');
-  const lang = searchParams.get('lang') || 'ru';
-  const day = dayParam ? parseInt(dayParam) : getDayInTimezone(2);
+  const { lang, day, explicit } = resolveShareParams(Object.fromEntries(searchParams));
+  const story = searchParams.get('format') === 'story';
+  const f = story ? FORMATS.story : FORMATS.link;
+  const px = (n) => `${Math.round(n * f.k)}px`;
 
-  const date = new Date();
-  const quotes = QUOTES_BY_LANG[lang] || QUOTES;
-  const quote = quotes[day % quotes.length];
-  const theme = MOOD_THEMES[quote.mood] || MOOD_THEMES.calm;
+  const quote = quoteForDay(QUOTES_BY_LANG[lang], day);
+  const [color1, color2] = themeFor(quote);
+  // разрядка рвёт слова на иврите
+  const spacing = (em) => (isRTL(lang) ? '0.06em' : em);
 
-  const [color1, color2] = theme.bg;
-  const subtleColor = 'rgba(255,255,255,0.5)';
-  const months = MONTHS[lang] || MONTHS.ru;
-  const dateStr = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-  const dayName = (DAYS[lang] || DAYS.ru)[date.getDay()];
-  const isRTL = lang === 'he';
-
-  // Scale factor ~2x relative to the 440px app card → 880px card in 1200px image
   return new ImageResponse(
     (
       <div style={{
-        width: '1200px', height: '630px',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
+        width: `${f.width}px`, height: `${f.height}px`,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         background: `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`,
-        fontFamily: 'Georgia, serif', position: 'relative',
+        position: 'relative',
       }}>
-        {/* Decorative orbs — same as app */}
-        <div style={{
-          position: 'absolute', width: '500px', height: '500px',
-          borderRadius: '50%', background: 'rgba(255,255,255,0.03)',
-          top: '-150px', right: '-150px', display: 'flex',
-        }} />
-        <div style={{
-          position: 'absolute', width: '300px', height: '300px',
-          borderRadius: '50%', background: 'rgba(255,255,255,0.02)',
-          bottom: '-80px', left: '-80px', display: 'flex',
-        }} />
+        <div style={{ position: 'absolute', width: px(500), height: px(500), borderRadius: '50%', background: 'rgba(255,255,255,0.03)', top: px(-150), right: px(-150), display: 'flex' }} />
+        <div style={{ position: 'absolute', width: px(300), height: px(300), borderRadius: '50%', background: 'rgba(255,255,255,0.02)', bottom: px(-80), left: px(-80), display: 'flex' }} />
 
-        {/* Card — mirrors app QuoteCard exactly, scaled 2x */}
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           background: 'rgba(255,255,255,0.07)',
           border: '1px solid rgba(255,255,255,0.12)',
-          borderRadius: '56px',
-          padding: '72px 88px',
-          width: '900px',
+          borderRadius: `${f.radius}px`,
+          padding: f.padding,
+          width: `${f.card}px`,
           textAlign: 'center',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
-          direction: isRTL ? 'rtl' : 'ltr',
+          direction: isRTL(lang) ? 'rtl' : 'ltr',
         }}>
-          {/* Date — app: 10px × 2 = 20px */}
-          <div style={{
-            fontSize: '20px', letterSpacing: '0.25em', textTransform: 'uppercase',
-            color: subtleColor, marginBottom: '24px', display: 'flex',
-          }}>
-            {dateStr}
+          <div style={{ fontSize: px(20), letterSpacing: spacing('0.25em'), textTransform: 'uppercase', color: SUBTLE, marginBottom: px(16), display: 'flex' }}>
+            {formatDate(day, lang)}
           </div>
-
-          {/* Day name — app: 14px × 2 = 28px */}
-          <div style={{
-            fontSize: '28px', letterSpacing: '0.35em', textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.7)', marginBottom: '64px', fontWeight: 600,
-            display: 'flex',
-          }}>
-            {dayName}
+          <div style={{ fontSize: px(28), letterSpacing: spacing('0.35em'), textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: px(36), fontWeight: 600, display: 'flex' }}>
+            {formatWeekday(day, lang)}
           </div>
-
-          {/* Divider — app: 40px wide × 2 = 80px */}
+          <div style={{ width: px(80), height: '1px', background: 'rgba(255,255,255,0.2)', marginBottom: px(40), display: 'flex' }} />
           <div style={{
-            width: '80px', height: '1px',
-            background: 'rgba(255,255,255,0.2)',
-            marginBottom: '56px', display: 'flex',
-          }} />
-
-          {/* Opening quote mark — app: 80px × 2 = 160px */}
-          <div style={{
-            fontSize: '160px', lineHeight: '0.5',
-            color: 'rgba(255,255,255,0.1)',
-            marginBottom: '48px', display: 'flex',
-          }}>&ldquo;</div>
-
-          {/* Quote text — app: 20px × 2 = 40px, scale down for long quotes */}
-          <div style={{
-            fontSize: quote.text.length > 100 ? '30px' : quote.text.length > 60 ? '36px' : '40px',
-            lineHeight: '1.75', color: '#ffffff',
-            fontStyle: 'italic', fontFamily: 'Georgia, serif',
-            marginBottom: '56px', display: 'flex', textAlign: 'center',
-            flexWrap: 'wrap', justifyContent: 'center',
+            fontSize: `${f.textSize(quote.text.length)}px`, lineHeight: 1.6, color: '#fff', fontStyle: 'italic',
+            marginBottom: px(40), display: 'flex', textAlign: 'center', justifyContent: 'center',
           }}>
             {quote.text}
           </div>
-
-          {/* Divider */}
-          <div style={{
-            width: '80px', height: '1px',
-            background: 'rgba(255,255,255,0.2)',
-            marginBottom: '48px', display: 'flex',
-          }} />
-
-          {/* Author — app: 11px × 2 = 22px */}
-          <div style={{
-            fontSize: '22px', letterSpacing: '0.35em', textTransform: 'uppercase',
-            color: subtleColor, display: 'flex', fontFamily: 'Georgia, serif',
-          }}>
+          <div style={{ width: px(80), height: '1px', background: 'rgba(255,255,255,0.2)', marginBottom: px(32), display: 'flex' }} />
+          <div style={{ fontSize: px(22), letterSpacing: spacing('0.3em'), textTransform: 'uppercase', color: SUBTLE, display: 'flex' }}>
             {quote.author}
           </div>
+          {story && quote.source && (
+            <div style={{ fontSize: px(19), fontStyle: 'italic', color: 'rgba(255,255,255,0.4)', marginTop: px(14), display: 'flex' }}>
+              {quote.source}
+            </div>
+          )}
         </div>
+
+        {story && (
+          <div style={{ position: 'absolute', bottom: '110px', fontSize: '26px', letterSpacing: spacing('0.3em'), textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'flex' }}>
+            {UI[lang].appName}
+          </div>
+        )}
       </div>
     ),
     {
-      width: 1200,
-      height: 630,
+      width: f.width,
+      height: f.height,
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        // Картинка для конкретного дня неизменна; «сегодняшняя» без даты живёт недолго.
+        'Cache-Control': explicit
+          ? 'public, max-age=86400, s-maxage=31536000, immutable'
+          : 'public, max-age=600, s-maxage=600',
       },
     }
   );
