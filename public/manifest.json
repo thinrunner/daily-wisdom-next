@@ -1,7 +1,8 @@
 {
+  "id": "/",
   "name": "Мудрость дня",
   "short_name": "Мудрость",
-  "description": "Ежедневные мотивирующие цитаты великих мыслителей",
+  "description": "Одна цитата на каждый день",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -71,5 +72,8 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["lifestyle", "education"]
+  "categories": [
+    "lifestyle",
+    "education"
+  ]
 }

@@ -1,4 +1,7 @@
 node_modules
 .next
-.env
+.env*
 .DS_Store
+.vercel
+# собирается из content/quotes скриптом scripts/build-quotes.mjs
+lib/generated
