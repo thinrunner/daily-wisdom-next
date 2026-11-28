@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DEFAULT_THEME, dayKey, dayOfYear, daysInYear, parseDayKey, quoteForDay, shiftDayKey, themeFor } from '../lib/quotes';
+import { MARK_SVG } from '../lib/logo.mjs';
 import { DEFAULT_LANG, LANGUAGES, UI, formatDate, formatWeekday, isLang, isRTL, quoted } from '../lib/i18n';
 
 const PAST_DAYS = 6; // сегодня + шесть предыдущих дней
 const SWIPE_THRESHOLD = 40;
 const INSTALL_SNOOZE_DAYS = 60;
+const SPLASH_MIN_MS = 900; // знак успевает собраться, даже если всё загрузилось мгновенно
 const SUBTLE = 'rgba(255,255,255,0.5)';
 
 // Каждый язык — отдельный чанк: клиент скачивает только выбранный.
@@ -97,7 +99,9 @@ export default function WisdomApp() {
   const [index, setIndex] = useState(0);
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [showSplash, setShowSplash] = useState(false);
+  // Сплэш есть уже в серверном HTML: виден с первого кадра, уходит, когда цитата готова.
+  const [splash, setSplash] = useState('on'); // 'on' → 'leaving' → 'gone'
+  const [minElapsed, setMinElapsed] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [install, setInstall] = useState(null); // null | 'ios' | 'prompt'
@@ -134,15 +138,7 @@ export default function WisdomApp() {
 
     const installed =
       window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (installed) {
-      let seen = false;
-      try {
-        seen = Boolean(window.sessionStorage.getItem('splash-shown'));
-        window.sessionStorage.setItem('splash-shown', '1');
-      } catch {}
-      if (!seen) setShowSplash(true);
-      return;
-    }
+    if (installed) return;
 
     // Установку предлагаем только тем, кто вернулся в другой день, и не чаще раза в два месяца.
     const firstVisit = store.get('wisdom-first-visit');
@@ -220,7 +216,8 @@ export default function WisdomApp() {
     });
   }, [today, active]);
 
-  const ready = cards.length > 0;
+  const loaded = cards.length > 0;
+  const ready = loaded && minElapsed; // контент появляется в тот же момент, когда сплэш начинает гаснуть
   const last = Math.max(0, cards.length - 1);
   const current = cards[Math.min(index, last)];
   const go = useCallback((step) => setIndex((i) => Math.min(PAST_DAYS, Math.max(0, i + step))), []);
@@ -236,6 +233,19 @@ export default function WisdomApp() {
   }, [go]);
 
   useEffect(() => () => clearTimeout(copiedTimer.current), []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinElapsed(true), SPLASH_MIN_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    setSplash((state) => (state === 'on' ? 'leaving' : state));
+    // страховка на случай, если transitionend не придёт (вкладка в фоне, reduced motion)
+    const timer = setTimeout(() => setSplash('gone'), 800);
+    return () => clearTimeout(timer);
+  }, [ready]);
 
   useEffect(() => {
     if (lastIndex.current !== index) buzz();
@@ -399,12 +409,10 @@ export default function WisdomApp() {
       <div aria-hidden="true" style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', top: -150, right: -150, pointerEvents: 'none' }} />
       <div aria-hidden="true" style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.02)', bottom: -80, left: -80, pointerEvents: 'none' }} />
 
-      {showSplash && (
-        <div className="splash" onAnimationEnd={(e) => { if (e.target === e.currentTarget) setShowSplash(false); }}>
-          <img src="/icons/icon-192.png" alt="" width={96} height={96} style={{ borderRadius: 22 }} />
-          <div style={{ marginTop: 24, fontSize: 18, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.8)' }}>
-            {ui.appName}
-          </div>
+      {splash !== 'gone' && (
+        <div className={splash === 'leaving' ? 'splash splash-out' : 'splash'} aria-hidden="true"
+          onTransitionEnd={(e) => { if (e.target === e.currentTarget) setSplash('gone'); }}>
+          <div className="splash-mark" dangerouslySetInnerHTML={{ __html: MARK_SVG }} />
         </div>
       )}
 
